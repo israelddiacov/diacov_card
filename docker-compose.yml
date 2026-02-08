@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  diacov-card:
+    build: .
+    container_name: diacov_luxury_card
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./instance:/app/instance
+    restart: always

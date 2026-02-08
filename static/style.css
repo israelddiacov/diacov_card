@@ -1,0 +1,46 @@
+body {
+    background: radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);
+    color: #d4af37; /* Dourado Clássico */
+    font-family: 'Playfair Display', serif; /* Fonte clássica e cara */
+}
+
+/* Efeito Dourado no Nome */
+.logo-text {
+    font-size: 3.5rem;
+    font-weight: 900;
+    letter-spacing: 8px;
+    background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.sub-logo {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+    color: #888;
+    margin-top: -10px;
+}
+
+.btn-luxury-gold {
+    background: linear-gradient(45deg, #d4af37, #fcf6ba);
+    color: #000;
+    border: none;
+    font-weight: bold;
+    letter-spacing: 1px;
+    padding: 15px;
+    border-radius: 0; /* Bordas retas são mais elegantes */
+    transition: 0.3s;
+}
+
+.btn-luxury-gold:hover {
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+    transform: scale(1.02);
+}
+
+.service-box {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(212, 175, 55, 0.2) !important;
+    border-radius: 0;
+}
