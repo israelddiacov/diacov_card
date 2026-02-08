@@ -1,14 +1,19 @@
+import os
+from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-import os
+
+# Carrega as variáveis do arquivo .env
+load_dotenv()
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'curitiba-luxury-key-2026'
+# Busca a chave do .env, se não achar, usa uma reserva (fallback)
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'chave-padrao-muito-segura')
 
-# Caminho para o banco de dados dentro do volume do Docker
+# Configuração do Banco de Dados usando a variável de ambiente
 db_path = os.path.join('/app/instance', 'database.db')
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', f'sqlite:///{db_path}')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
