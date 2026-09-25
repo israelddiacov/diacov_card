@@ -1,2 +1,15 @@
 /__pycache__
 card_token.txt
+
+/__pycache__
+card_token.txt
+old_temp/
+.env*
+.vscode/
+
+old_temp/
+.env*
+__pycache__/
+card_token.txt
+.vscode/
+.idea/

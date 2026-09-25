@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Israel D. Diacov - Engenharia de Software & Soluções em TI</title>
+  
+  <!-- SEO & Metadados -->
+  <meta name="description" content="Cartão Digital Executivo e Portfólio de Soluções de TI - Israel D. Diacov. ERPs, APIs, Fechamentos Corporativos, Rust e Suporte Concierge.">
+  <meta name="keywords" content="Israel Diacov, Diacov Informática, Cartão Digital, ERP, Fechamentos, APIs REST, Rust, Python, Curitiba">
+  <meta name="author" content="Israel D. Diacov">
+  <meta name="theme-color" content="#0a0d14">
+  
+  <!-- Open Graph / Redes Sociais -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Israel D. Diacov - Soluções em TI & Engenharia de Software">
+  <meta property="og:description" content="Cartão Digital Executivo: Módulos ERP, APIs, Engenharia de Software e Consultoria Especializada.">
+  
+  <!-- PWA Manifest & Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- Fontes Google (Outfit + Inter + JetBrains Mono) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Estilos Customizados -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Elementos de Iluminação Ambiente / Orbs de Fundo -->
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="orb orb-gold"></div>
+    <div class="orb orb-blue"></div>
+    <div class="orb orb-center"></div>
+  </div>
+
+  <!-- Container Principal -->
+  <main class="app-container">
+
+    <!-- Barra de Navegação Superior / Ações Rápidas -->
+    <header class="top-bar">
+      <div class="brand-badge">
+        <div class="brand-logo-icon">ID</div>
+        <span>DIACOV SOLUTIONS</span>
+      </div>
+
+      <div class="toolbar-actions">
+        <!-- Alternar Tema -->
+        <button class="icon-btn" id="themeToggle" aria-label="Alternar Tema" title="Alternar Modo Escuro/Claro">
+          <i class="fas fa-sun"></i>
+        </button>
+        <!-- Abrir QR Code -->
+        <button class="icon-btn" onclick="openQRCodeModal()" aria-label="Ver QR Code" title="Exibir QR Code">
+          <i class="fas fa-qrcode"></i>
+        </button>
+        <!-- Compartilhar -->
+        <button class="icon-btn" onclick="shareCard()" aria-label="Compartilhar Cartão" title="Compartilhar Cartão">
+          <i class="fas fa-share-nodes"></i>
+        </button>
+        <!-- Painel de Leads (Privado) -->
+        <button class="icon-btn" onclick="openLeadsModal()" aria-label="Gerenciar Contatos" title="Ver Leads Recebidos">
+          <i class="fas fa-user-shield"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Card de Perfil Executivo / Hero Section -->
+    <section class="hero-card">
+      <div class="hero-layout">
+        
+        <!-- Avatar com Moldura Dourada Nobre -->
+        <div class="avatar-wrapper">
+          <div class="avatar-frame">
+            <div class="avatar-inner">
+              <span class="avatar-initials">ID</span>
+            </div>
+          </div>
+          <div class="status-badge-dot" title="Disponível para novos projetos"></div>
+        </div>
+
+        <!-- Dados Principais -->
+        <div class="hero-content">
+          <div class="status-pill">
+            <span class="status-pulse"></span>
+            Disponível para Consultoria & Projetos
+          </div>
+
+          <h1 class="hero-name">Israel D. Diacov</h1>
+          <div class="hero-title">ENGENHARIA DE SOFTWARE & CONSULTORIA TI</div>
+          
+          <p class="hero-bio">
+            Especialista em arquitetura de sistemas corporativos, módulos ERP, integrações de APIs, automação de fechamentos financeiros e suporte concierge em TI de alto padrão.
+          </p>
+
+          <div class="hero-location">
+            <i class="fas fa-location-dot"></i>
+            <span>Curitiba - PR • Atendimento Presencial & Remoto</span>
+          </div>
+        </div>
+
+        <!-- Botões de Ação Imediata -->
+        <div class="hero-cta">
+          <a href="https://wa.me/5541999248171" target="_blank" rel="noopener" class="btn btn-gold">
+            <i class="fab fa-whatsapp"></i> Atendimento Concierge
+          </a>
+          <button onclick="downloadVCard()" class="btn btn-outline-gold">
+            <i class="fas fa-address-card"></i> Salvar Contato (.vCard)
+          </button>
+          <a href="mailto:israelddiacov@outlook.com.br" class="btn btn-outline-gold">
+            <i class="far fa-envelope"></i> E-mail Direto
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Métricas & Destaques de Atuação -->
+    <section class="metrics-grid" aria-label="Métricas de Desempenho">
+      <div class="metric-card">
+        <div class="metric-number">ERP</div>
+        <div class="metric-label">Módulos & Fechamentos</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-number">APIs</div>
+        <div class="metric-label">Pipelines & Integrações</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-number">Rust</div>
+        <div class="metric-label">Engenharia Bare-Metal</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-number">VIP</div>
+        <div class="metric-label">Suporte Concierge</div>
+      </div>
+    </section>
+
+    <!-- Seção de Portfólio & Módulos Desenvolvidos -->
+    <section class="section-wrapper" id="portfolio">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">
+            <i class="fas fa-cubes-stacked"></i> Módulos & Soluções Desenvolvidas
+          </h2>
+          <div class="section-subtitle">Arquitetura de sistemas, integrações e engenharia aplicada</div>
+        </div>
+      </div>
+
+      <!-- Filtro de Categorias (Deslizável no celular) -->
+      <div class="project-filters" role="tablist">
+        <button class="filter-chip active" data-filter="all">Todos os Módulos</button>
+        <button class="filter-chip" data-filter="erp-finance">ERP & Fechamentos</button>
+        <button class="filter-chip" data-filter="apis-integration">APIs & Integrações</button>
+        <button class="filter-chip" data-filter="systems-core">Engenharia & Baixo Nível</button>
+        <button class="filter-chip" data-filter="web-analytics">Web, BI & Cloud</button>
+      </div>
+
+      <!-- Grid de Projetos e Módulos -->
+      <div class="projects-grid">
+        
+        <!-- 1. Módulo de Fechamentos Corporativos -->
+        <article class="project-card" data-category="erp-finance">
+          <div>
+            <div class="project-badge-type">
+              <i class="fas fa-calculator"></i> Gestão Financeira & ERP
+            </div>
+            <h3 class="project-title">Fechamentos & Conciliações Corporativas</h3>
+            <p class="project-desc">
+              Automação de fechamentos financeiros e de benefícios, validação de regras de faturamento, conciliação de matrículas e auditoria de repasses complexos.
+            </p>
+          </div>
+          <div>
+            <div class="project-tags">
+              <span class="tech-tag">ERP</span>
+              <span class="tech-tag">Conciliação</span>
+              <span class="tech-tag">Python</span>
+              <span class="tech-tag">SQL</span>
+            </div>
+            <div class="project-footer">
+              <span class="project-status"><i class="fas fa-check-circle"></i> Produção & Auditoria</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 2. Integração de APIs REST & Microsserviços -->
+        <article class="project-card" data-category="apis-integration">
+          <div>
+            <div class="project-badge-type">
+              <i class="fas fa-network-wired"></i> Microsserviços & Conectores
+            </div>
+            <h3 class="project-title">Integração de APIs REST & Webhooks</h3>
+            <p class="project-desc">
+              Arquitetura e sincronização bidirecional de dados entre microsserviços, plataformas de atendimento/triagem, mensageria e gateways de dados legados.
+            </p>
+          </div>
+          <div>
+            <div class="project-tags">
+              <span class="tech-tag">APIs REST</span>
+              <span class="tech-tag">Webhooks</span>
+              <span class="tech-tag">JSON</span>
+              <span class="tech-tag">Endpoints</span>
+            </div>
+            <div class="project-footer">
+              <span class="project-status"><i class="fas fa-check-circle"></i> Alta Confiabilidade</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 3. Pipelines ETL & Processamento de Dados -->
+        <article class="project-card" data-category="apis-integration">
+          <div>
+            <div class="project-badge-type">
+              <i class="fas fa-database"></i> Engenharia de Dados
+            </div>
+            <h3 class="project-title">Pipelines ETL & Fuzzy Matching</h3>
+            <p class="project-desc">
+              Higienização de grandes volumes de dados, validação de layouts complexos, cruzamento automatizado por fuzzy matching e conversão de logs para SQL.
+            </p>
+          </div>
+          <div>
+            <div class="project-tags">
+              <span class="tech-tag">ETL</span>
+              <span class="tech-tag">Fuzzy Match</span>
+              <span class="tech-tag">Data Cleaning</span>
+              <span class="tech-tag">SQL</span>
+            </div>
+            <div class="project-footer">
+              <span class="project-status"><i class="fas fa-check-circle"></i> Processamento em Lote</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 4. Módulo Comercial, Estoque & PDV -->
+        <article class="project-card" data-category="erp-finance">
+          <div>
+            <div class="project-badge-type">
+              <i class="fas fa-cash-register"></i> Gestão Comercial & PDV
+            </div>
+            <h3 class="project-title">Módulo de Estoque, Pedidos & Frente de Caixa</h3>
+            <p class="project-desc">
+              Sistemas de ponto de venda (PDV), controle de inventário em tempo real, emissão de pedidos e relatórios de fluxo financeiro ágil.
+            </p>
+          </div>
+          <div>
+            <div class="project-tags">
+              <span class="tech-tag">Full Stack</span>
+              <span class="tech-tag">PDV</span>
+              <span class="tech-tag">Estoque</span>
+              <span class="tech-tag">Fluxo de Caixa</span>
+            </div>
+            <div class="project-footer">
+              <span class="project-status"><i class="fas fa-check-circle"></i> Implantado</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 5. Bootloader Bare-Metal em Rust -->
+        <article class="project-card" data-category="systems-core">
+          <div>
+            <div class="project-badge-type">
+              <i class="fas fa-microchip"></i> Engenharia de Baixo Nível
+            </div>
+            <h3 class="project-title">Bootloader Bare-Metal & Arquitetura OS</h3>
+            <p class="project-desc">
+              Desenvolvimento de inicializador de sistema operacional em Rust com gestão direta de memória, modo protegido e segurança em nível de hardware.
+            </p>
+          </div>
+          <div>
+            <div class="project-tags">
+              <span class="tech-tag">Rust</span>
+              <span class="tech-tag">Bare-Metal</span>
+              <span class="tech-tag">x86_64</span>
+              <span class="tech-tag">Memory Safety</span>
+            </div>
+            <div class="project-footer">
+              <span class="project-status"><i class="fas fa-code-branch"></i> Engenharia de Sistemas</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 6. Aplicações Multiplataforma Desktop & Mobile -->
+        <article class="project-card" data-category="systems-core">
+          <div>
+            <div class="project-badge-type">
+              <i class="fas fa-mobile-screen"></i> Apps Nativos Multiplataforma
+            </div>
+            <h3 class="project-title">Aplicações Desktop & Mobile Nativas</h3>
+            <p class="project-desc">
+              Desenvolvimento de softwares nativos para Android, Windows e Linux com arquitetura modular em Python (BeeWare, Toga e Flet).
+            </p>
+          </div>
+          <div>
+            <div class="project-tags">
+              <span class="tech-tag">BeeWare</span>
+              <span class="tech-tag">Toga</span>
+              <span class="tech-tag">Android</span>
+              <span class="tech-tag">Desktop</span>
+            </div>
+            <div class="project-footer">
+              <span class="project-status"><i class="fas fa-check-circle"></i> Multi-OS</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 7. Plataforma com IA para Atas & Produtividade -->
+        <article class="project-card" data-category="erp-finance">
+          <div>
+            <div class="project-badge-type">
+              <i class="fas fa-bolt"></i> Automação & IA Corporativa
+            </div>
+            <h3 class="project-title">Automação de Atas & Transcrição Semântica</h3>
+            <p class="project-desc">
+              Solução inteligente para automação de reuniões executivas, geração de atas em tempo real e processamento de linguagem natural (NLP).
+            </p>
+          </div>
+          <div>
+            <div class="project-tags">
+              <span class="tech-tag">Python</span>
+              <span class="tech-tag">Automação</span>
+              <span class="tech-tag">IA & NLP</span>
+              <span class="tech-tag">Produtividade</span>
+            </div>
+            <div class="project-footer">
+              <span class="project-status"><i class="fas fa-check-circle"></i> Alta Performance</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 8. Business Intelligence & Dashboards Analíticos -->
+        <article class="project-card" data-category="web-analytics">
+          <div>
+            <div class="project-badge-type">
+              <i class="fas fa-chart-line"></i> Business Intelligence & Analytics
+            </div>
+            <h3 class="project-title">Dashboards Gerenciais & BI Interativo</h3>
+            <p class="project-desc">
+              Implantação de stacks de análise de dados com Apache Superset e componentes visuais (ECharts) para suporte à tomada de decisão executiva.
+            </p>
+          </div>
+          <div>
+            <div class="project-tags">
+              <span class="tech-tag">Superset</span>
+              <span class="tech-tag">ECharts</span>
+              <span class="tech-tag">Analytics</span>
+              <span class="tech-tag">BI</span>
+            </div>
+            <div class="project-footer">
+              <span class="project-status"><i class="fas fa-check-circle"></i> Visualização Avançada</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 9. Modernização Web & SEO Estratégico -->
+        <article class="project-card" data-category="web-analytics">
+          <div>
+            <div class="project-badge-type">
+              <i class="fas fa-globe"></i> Web & Otimização
+            </div>
+            <h3 class="project-title">Modernização Web, Performance & SEO</h3>
+            <p class="project-desc">
+              Reestruturação de interfaces Webflow, otimização de Core Web Vitals e arquitetura de SEO Baseline de alta conversão para negócios.
+            </p>
+          </div>
+          <div>
+            <div class="project-tags">
+              <span class="tech-tag">Webflow</span>
+              <span class="tech-tag">SEO Baseline</span>
+              <span class="tech-tag">UX/UI</span>
+              <span class="tech-tag">Core Web Vitals</span>
+            </div>
+            <div class="project-footer">
+              <span class="project-status"><i class="fas fa-check-circle"></i> Otimizado</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 10. Automação Fiscal & Demonstrativos Contábeis -->
+        <article class="project-card" data-category="erp-finance">
+          <div>
+            <div class="project-badge-type">
+              <i class="fas fa-file-invoice-dollar"></i> Contábil & Fiscal
+            </div>
+            <h3 class="project-title">Automação Fiscal & Relatórios Contábeis</h3>
+            <p class="project-desc">
+              Módulos de cálculo automatizado de impostos, conciliação tributária e geração de demonstrativos com validação instantânea.
+            </p>
+          </div>
+          <div>
+            <div class="project-tags">
+              <span class="tech-tag">Fiscal</span>
+              <span class="tech-tag">Relatórios</span>
+              <span class="tech-tag">Automação</span>
+              <span class="tech-tag">Compliance</span>
+            </div>
+            <div class="project-footer">
+              <span class="project-status"><i class="fas fa-check-circle"></i> Concluído</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 11. Ambientes Docker & Deploy Automatizado -->
+        <article class="project-card" data-category="web-analytics">
+          <div>
+            <div class="project-badge-type">
+              <i class="fas fa-box-archive"></i> DevOps & Infraestrutura
+            </div>
+            <h3 class="project-title">Containers Docker & Atualizadores de Sistemas</h3>
+            <p class="project-desc">
+              Padronização de stacks corporativas com Docker, rotinas de backup, instaladores locais e atualizadores automáticos de sistemas.
+            </p>
+          </div>
+          <div>
+            <div class="project-tags">
+              <span class="tech-tag">Docker</span>
+              <span class="tech-tag">DevOps</span>
+              <span class="tech-tag">Deploy</span>
+              <span class="tech-tag">Automação</span>
+            </div>
+            <div class="project-footer">
+              <span class="project-status"><i class="fas fa-check-circle"></i> Produção</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 12. Mensageria & Notificações Transacionais -->
+        <article class="project-card" data-category="apis-integration">
+          <div>
+            <div class="project-badge-type">
+              <i class="fas fa-envelope-open-text"></i> Comunicação & Mensageria
+            </div>
+            <h3 class="project-title">Mensageria Transacional & Disparo em Massa</h3>
+            <p class="project-desc">
+              Serviços automatizados de mensageria, disparo de e-mails corporativos via SMTP/Outlook e notificações programadas de alta segurança.
+            </p>
+          </div>
+          <div>
+            <div class="project-tags">
+              <span class="tech-tag">SMTP</span>
+              <span class="tech-tag">Outlook API</span>
+              <span class="tech-tag">Automação</span>
+              <span class="tech-tag">Notificações</span>
+            </div>
+            <div class="project-footer">
+              <span class="project-status"><i class="fas fa-check-circle"></i> Automatizado</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- Seção de Serviços Especializados -->
+    <section class="section-wrapper" id="servicos">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">
+            <i class="fas fa-shield-halved"></i> Serviços & Soluções Especializadas
+          </h2>
+          <div class="section-subtitle">Excelência técnica e suporte personalizado</div>
+        </div>
+      </div>
+
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon-box">
+            <i class="fas fa-screwdriver-wrench"></i>
+          </div>
+          <h3 class="service-title">Manutenção & Reparo</h3>
+          <p class="service-desc">
+            Diagnóstico avançado, upgrades de hardware, otimização térmica e restauração de computadores e notebooks.
+          </p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon-box">
+            <i class="fas fa-network-wired"></i>
+          </div>
+          <h3 class="service-title">Redes & Wi-Fi Estruturado</h3>
+          <p class="service-desc">
+            Configuração de redes de alta velocidade (Wi-Fi 6 / Mesh), roteamento corporativo, firewalls e segurança.
+          </p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon-box">
+            <i class="fas fa-code"></i>
+          </div>
+          <h3 class="service-title">Desenvolvimento & ERP</h3>
+          <p class="service-desc">
+            Módulos personalizados para ERPs, integrações de APIs, microsserviços e sistemas web de alta conversão.
+          </p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon-box">
+            <i class="fas fa-crown"></i>
+          </div>
+          <h3 class="service-title">Suporte Concierge VIP</h3>
+          <p class="service-desc">
+            Atendimento prioritário para executivos, montagem de workstations de elite e consultoria sob medida.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Formulário de Contato Concierge com WhatsApp Inteligente -->
+    <section class="contact-section" id="contato">
+      <div class="section-header" style="border: none; padding-bottom: 0;">
+        <div>
+          <h2 class="section-title">
+            <i class="fas fa-paper-plane"></i> Solicite um Atendimento Concierge
+          </h2>
+          <div class="section-subtitle">
+            Preencha seus dados para iniciarmos uma conversa imediata no WhatsApp
+          </div>
+        </div>
+      </div>
+
+      <form id="conciergeForm" style="margin-top: 16px;">
+        <div class="form-grid">
+          
+          <div class="form-group">
+            <label for="leadName" class="form-label">Seu Nome ou Empresa *</label>
+            <input type="text" id="leadName" class="form-control" placeholder="Ex: Roberto / Empresa X" required>
+          </div>
+
+          <div class="form-group">
+            <label for="leadPhone" class="form-label">WhatsApp ou Telefone *</label>
+            <input type="tel" id="leadPhone" class="form-control" placeholder="Ex: (41) 99999-9999" required>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="leadService" class="form-label">Serviço de Interesse</label>
+            <select id="leadService" class="form-control">
+              <option value="Sistemas ERP, Módulos & Fechamentos">Sistemas ERP, Módulos & Fechamentos</option>
+              <option value="Integração de APIs & Microsserviços">Integração de APIs & Microsserviços</option>
+              <option value="Desenvolvimento de Software / Web / SEO">Desenvolvimento de Software / Web / SEO</option>
+              <option value="Manutenção de Computadores & Redes">Manutenção de Computadores & Redes</option>
+              <option value="Consultoria em TI & Suporte VIP">Consultoria em TI & Suporte VIP</option>
+            </select>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="leadMessage" class="form-label">Mensagem (Opcional)</label>
+            <textarea id="leadMessage" class="form-control" placeholder="Conte brevemente o que você precisa ou sua dúvida..."></textarea>
+          </div>
+
+        </div>
+
+        <div class="contact-actions">
+          <button type="submit" class="btn btn-gold">
+            <i class="fab fa-whatsapp"></i> Iniciar Atendimento via WhatsApp
+          </button>
+          <button type="button" onclick="copyText('israelddiacov@outlook.com.br', 'Chave Pix / E-mail')" class="btn btn-outline-gold">
+            <i class="fas fa-copy"></i> Copiar Chave Pix / E-mail
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Rodapé Executivo -->
+    <footer class="app-footer">
+      <div class="footer-brand">DIACOV INFORMÁTICA & ENGENHARIA DE SOFTWARE</div>
+      <p>&copy; 2026 Israel D. Diacov. Todos os direitos reservados.</p>
+      <p style="font-size: 0.72rem; margin-top: 4px; opacity: 0.7;">
+        Curitiba - PR • Tecnologia Nativa do Navegador • Padrão de Alta Performance
+      </p>
+    </footer>
+
+  </main>
+
+  <!-- Modal do QR Code -->
+  <div class="modal-backdrop" id="qrModal" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fas fa-qrcode me-2"></i> QR Code do Cartão</h3>
+        <button class="modal-close" aria-label="Fechar">&times;</button>
+      </div>
+      <div class="qr-container">
+        <p style="font-size: 0.85rem; color: var(--text-muted);">
+          Aponte a câmera do seu celular para abrir o cartão digital instantaneamente:
+        </p>
+        <div class="qr-canvas-frame">
+          <canvas id="qrCanvas"></canvas>
+        </div>
+        <div style="display: flex; gap: 8px; width: 100%;">
+          <button onclick="copyCardLink()" class="btn btn-outline-gold btn-sm" style="flex: 1;">
+            <i class="fas fa-link"></i> Copiar Link
+          </button>
+          <button onclick="shareCard()" class="btn btn-gold btn-sm" style="flex: 1;">
+            <i class="fas fa-share-nodes"></i> Compartilhar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Gestão de Leads (Admin) -->
+  <div class="modal-backdrop" id="leadsModal" role="dialog" aria-modal="true">
+    <div class="modal-box" style="max-width: 640px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fas fa-users-gear me-2"></i> Solicitações de Contato</h3>
+        <button class="modal-close" aria-label="Fechar">&times;</button>
+      </div>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">
+        Leads registrados de forma nativa e segura no navegador:
+      </p>
+      
+      <div id="leadsTableContainer">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+
+      <div style="display: flex; justify-content: space-between; margin-top: 16px; flex-wrap: wrap; gap: 8px;">
+        <button onclick="exportLeadsCSV()" class="btn btn-tech btn-sm">
+          <i class="fas fa-file-excel"></i> Exportar CSV
+        </button>
+        <button onclick="clearAllLeads()" class="btn btn-outline-gold btn-sm" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.4);">
+          <i class="fas fa-trash-can"></i> Limpar Registros
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script da Aplicação -->
+  <script src="js/app.js"></script>
+</body>
+</html>
