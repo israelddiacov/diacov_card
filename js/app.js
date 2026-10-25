@@ -1,36 +1,109 @@
 /**
- * DIACOV INFORMÁTICA - CARTÃO DIGITAL & PORTFÓLIO EXECUTIVO
- * Lógica 100% Nativa do Navegador (Vanilla JS - Zero Dependências Obrigatórias)
+ * ISRAEL D. DIACOV - EXPERIÊNCIA IMERSIVA RETRÔ ANOS 60 FULLSCREEN
+ * JavaScript Nativo (Vanilla JS) - Contornos Vetoriais, Efeitos Especiais & WhatsApp
+ * Foco: Sites, Programas, Google Ads, SEO e Sistemas Médicos (ANS, CNES, CBHPM)
  */
 
 (function () {
   'use strict';
 
-  // Configuração e Dados de Contato
+  // Configuração Geral de Contato
   const CONTACT_INFO = {
     name: 'Israel D. Diacov',
-    company: 'Diacov Informática & Engenharia de Software',
-    title: 'Engenheiro de Software & Consultor TI',
+    company: 'Israel D. Diacov - Soluções Digitais & Software',
     phoneFormatted: '(41) 99924-8171',
     phoneRaw: '5541999248171',
     email: 'israelddiacov@outlook.com.br',
     location: 'Curitiba - PR, Brasil',
-    pix: 'israelddiacov@outlook.com.br',
     website: window.location.href
   };
 
-  // Inicialização
+  // Base de Dados dos Objetos Interativos da Sala
+  const SCENE_OBJECTS = {
+    radio: {
+      badge: '<i class="fas fa-bolt"></i> Comunicação & Mensageria',
+      title: 'Automação de Mensagens, E-mails & WhatsApp',
+      body: '<p>Desenvolvimento de robôs inteligentes de atendimento, automação de mensagens transacionais e envio massivo de e-mails corporativos via SMTP/Outlook e integração oficial com a API do WhatsApp.</p>',
+      highlights: [
+        '<i class="fas fa-check-circle"></i> Integração oficial com a API do WhatsApp e Webhooks bidirecionais',
+        '<i class="fas fa-check-circle"></i> Disparadores de e-mails em massa corporativos via SMTP e Outlook',
+        '<i class="fas fa-check-circle"></i> Robôs de atendimento, triagem automática e avisos transacionais',
+        '<i class="fas fa-check-circle"></i> Histórico de disparos, controle de fila e logs de entrega em tempo real'
+      ],
+      tags: ['WhatsApp API', 'SMTP / Outlook', 'Mensageria em Massa', 'Webhooks', 'Automação', 'Python'],
+      ctaText: 'Solicitar Automação de Comunicação no WhatsApp',
+      whatsappMsg: 'Olá Israel! Vi seu cartão interativo e gostaria de automatizar mensagens, e-mails ou WhatsApp para minha empresa.'
+    },
+
+    dev: {
+      badge: '<i class="fas fa-laptop-code"></i> Criação & Alteração de Software',
+      title: 'Criação e Reforma de Sites & Programas Sob Medida',
+      body: '<p>Criação do zero de novos sites rápidos e modernos, landing pages de alta conversão, e reformulações visuais em sites existentes. Desenvolvimento de programas para Windows, Linux e Android com bancos de dados relacionais e APIs REST.</p>',
+      highlights: [
+        '<i class="fas fa-check-circle"></i> Criação de novos sites modernos, velozes e responsivos no celular',
+        '<i class="fas fa-check-circle"></i> Reformas completas, ajustes de layout e correções de bugs em sites existentes',
+        '<i class="fas fa-check-circle"></i> Programas desktop e web sob medida (Windows, Linux e Android)',
+        '<i class="fas fa-check-circle"></i> Bancos de dados relacionais robustos (PostgreSQL, Oracle e SQLite)',
+        '<i class="fas fa-check-circle"></i> Deploys automatizados com Docker e servidores Linux Nginx'
+      ],
+      tags: ['Criação de Sites', 'Reforma de Sites', 'Python', 'PHP / Laravel', 'C# / .NET', 'Docker', 'PostgreSQL'],
+      ctaText: 'Pedir Orçamento de Site / Programa no WhatsApp',
+      whatsappMsg: 'Olá Israel! Gostaria de um orçamento para criar ou reformar um site ou programa sob medida.'
+    },
+
+    medical: {
+      badge: '<i class="fas fa-heart-pulse"></i> HealthTech & Regulação',
+      title: 'Sistemas em Saúde, Conformidade ANS & CNES',
+      body: '<p>Plataformas corporativas completas para a área médica: regulação de leitos hospitalares e ambulâncias, portais de saúde suplementar em conformidade com as normas da <strong>ANS (Agência Nacional de Saúde Suplementar)</strong> e telemedicina em tempo real.</p>',
+      highlights: [
+        '<i class="fas fa-check-circle"></i> Conformidade rigorosa com normas e resoluções normativas da ANS',
+        '<i class="fas fa-check-circle"></i> Padrão TISS (Troca de Informações) e TUSS (Terminologia Unificada da ANS)',
+        '<i class="fas fa-check-circle"></i> Integração oficial via webservices com o CNES (Ministério da Saúde)',
+        '<i class="fas fa-check-circle"></i> Faturamento médico com tabelas oficiais CBHPM, TUSS, SIMPRO e Brasíndice',
+        '<i class="fas fa-check-circle"></i> Leitura inteligente e auditoria de guias médicas com tecnologia OCR',
+        '<i class="fas fa-check-circle"></i> Telemedicina segura por vídeo em tempo real com protocolo WebRTC'
+      ],
+      tags: ['Padrão TISS / TUSS', 'Regulação ANS', 'Integração CNES', 'Tabela CBHPM', 'OCR de Guias', 'WebRTC Vídeo'],
+      ctaText: 'Conversar sobre Soluções para a Saúde no WhatsApp',
+      whatsappMsg: 'Olá Israel! Gostaria de conversar sobre desenvolvimento de sistemas para a área médica (ANS, CNES, CBHPM ou Telemedicina).'
+    },
+
+    tv: {
+      badge: '<i class="fas fa-bullseye"></i> Tráfego Pago & Posicionamento',
+      title: 'Google Ads & Otimização SEO',
+      body: '<p>Coloque sua empresa no topo das pesquisas do Google. Gestão estratégica de anúncios patrocinados no Google Ads para atrair clientes prontos para comprar, somada a otimização técnica de SEO para ranqueamento orgânico.</p>',
+      highlights: [
+        '<i class="fas fa-check-circle"></i> Campanhas de Google Ads focadas em contatos diários no seu WhatsApp',
+        '<i class="fas fa-check-circle"></i> Redução de custo por clique (CPC) e foco em leads qualificados',
+        '<i class="fas fa-check-circle"></i> Otimização de SEO técnico para colocar o site no topo sem pagar por anúncio',
+        '<i class="fas fa-check-circle"></i> Aceleração máxima de velocidade e pontuação no Google Core Web Vitals',
+        '<i class="fas fa-check-circle"></i> Certificação de segurança HTTPS e indexação correta no Google Search Console'
+      ],
+      tags: ['Google Ads', 'SEO no Topo', 'Core Web Vitals', 'Tráfego Pago', 'Conversão no WhatsApp', 'Search Console'],
+      ctaText: 'Colocar Minha Empresa no Google via WhatsApp',
+      whatsappMsg: 'Olá Israel! Gostaria de colocar minha empresa no topo do Google com campanhas de Google Ads e SEO.'
+    }
+  };
+
+  // Variáveis de Estado
+  let activeObjectKey = null;
+  let canvas, ctx;
+  let particles = [];
+  let sparks = [];
+  let ecgStep = 0;
+
+  // Inicialização no DOM Ready
   document.addEventListener('DOMContentLoaded', () => {
     initTheme();
-    initProjectFilters();
-    initContactForm();
-    initModals();
-    initLeadManager();
+    initCanvasEffects();
+    initSvgEvents();
+    initForms();
+    initKeyboardShortcuts();
     initServiceWorker();
   });
 
   /* ==========================================================================
-     1. TEMA DARK / LIGHT (PERSISTENTE)
+     1. TEMA NOTURNO / DIURNO
      ========================================================================== */
   function initTheme() {
     const themeBtn = document.getElementById('themeToggle');
@@ -45,7 +118,7 @@
         document.documentElement.setAttribute('data-theme', nextTheme);
         localStorage.setItem('diacov_theme', nextTheme);
         updateThemeIcon(nextTheme);
-        showToast(`Tema ${nextTheme === 'dark' ? 'Escuro' : 'Claro'} ativado`, 'info');
+        showToast(`Tema Retrô ${nextTheme === 'dark' ? 'Noturno' : 'Diurno'} ativado`, 'info');
       });
     }
   }
@@ -53,17 +126,406 @@
   function updateThemeIcon(theme) {
     const icon = document.querySelector('#themeToggle i');
     if (!icon) return;
-    if (theme === 'dark') {
-      icon.className = 'fas fa-sun';
-      icon.title = 'Alternar para Modo Claro';
-    } else {
-      icon.className = 'fas fa-moon';
-      icon.title = 'Alternar para Modo Escuro';
+    icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+  }
+
+  /* ==========================================================================
+     2. EFEITOS ESPECIAIS NO CANVAS FULLSCREEN (POEIRA, RAIOS, ECG, BRILHO)
+     ========================================================================== */
+  function initCanvasEffects() {
+    canvas = document.getElementById('sceneCanvas');
+    if (!canvas) return;
+    ctx = canvas.getContext('2d');
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    // 35 partículas de poeira dourada flutuando com a luz cinematográfica
+    particles = [];
+    for (let i = 0; i < 35; i++) {
+      particles.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        radius: Math.random() * 2 + 0.8,
+        speedX: (Math.random() - 0.5) * 0.4,
+        speedY: -Math.random() * 0.4 - 0.1,
+        alpha: Math.random() * 0.6 + 0.2
+      });
+    }
+
+    startAnimationLoop();
+  }
+
+  function resizeCanvas() {
+    if (!canvas) return;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  function startAnimationLoop() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 1. Partículas douradas
+    for (let p of particles) {
+      p.x += p.speedX;
+      p.y += p.speedY;
+
+      if (p.y < 0) p.y = canvas.height;
+      if (p.x < 0) p.x = canvas.width;
+      if (p.x > canvas.width) p.x = 0;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(244, 162, 97, ${p.alpha})`;
+      ctx.fill();
+    }
+
+    // 2. Efeito do Rádio: Raios Elétricos e Faíscas
+    if (activeObjectKey === 'radio') {
+      drawRadioLightning();
+    }
+
+    // 3. Efeito dos Aparelhos Médicos: ECG Neon Verde
+    if (activeObjectKey === 'medical') {
+      drawMedicalECG();
+    }
+
+    // 4. Efeito da TV: Brilho Analógico de Tubo (CRT)
+    if (activeObjectKey === 'tv') {
+      drawTvGlow();
+    }
+
+    // 5. Efeito da Estação Dev: Pulso Digital Ciano
+    if (activeObjectKey === 'dev') {
+      drawDevMatrixGlow();
+    }
+
+    requestAnimationFrame(startAnimationLoop);
+  }
+
+  // Raios e faíscas dinâmicas no rádio antigo
+  function drawRadioLightning() {
+    const group = document.getElementById('groupRadio');
+    if (!group) return;
+    const rect = group.getBoundingClientRect();
+    if (rect.width === 0) return;
+
+    const startX = rect.left + rect.width * 0.5;
+    const startY = rect.top + rect.height * 0.35;
+
+    // Faíscas
+    if (Math.random() < 0.45) {
+      for (let i = 0; i < 3; i++) {
+        sparks.push({
+          x: startX,
+          y: startY,
+          vx: (Math.random() - 0.5) * 8,
+          vy: (Math.random() - 0.7) * 8,
+          life: 22,
+          color: Math.random() > 0.4 ? '#ffea79' : '#00f0ff'
+        });
+      }
+    }
+
+    for (let i = sparks.length - 1; i >= 0; i--) {
+      const s = sparks[i];
+      s.x += s.vx;
+      s.y += s.vy;
+      s.life--;
+
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, 2, 0, Math.PI * 2);
+      ctx.fillStyle = s.color;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = s.color;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      if (s.life <= 0) sparks.splice(i, 1);
+    }
+
+    // Arcos elétricos ramificados
+    if (Math.random() < 0.7) {
+      const rayCount = Math.floor(Math.random() * 3) + 2;
+      for (let r = 0; r < rayCount; r++) {
+        let curX = startX;
+        let curY = startY;
+        const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.8;
+        const length = 55 + Math.random() * 80;
+        const steps = 7;
+
+        ctx.beginPath();
+        ctx.moveTo(curX, curY);
+
+        for (let s = 0; s < steps; s++) {
+          const segLen = length / steps;
+          curX += Math.cos(angle) * segLen + (Math.random() - 0.5) * 18;
+          curY += Math.sin(angle) * segLen + (Math.random() - 0.5) * 18;
+          ctx.lineTo(curX, curY);
+        }
+
+        ctx.strokeStyle = Math.random() > 0.4 ? '#ffea79' : '#00e5ff';
+        ctx.lineWidth = Math.random() * 2.5 + 1;
+        ctx.shadowBlur = 14;
+        ctx.shadowColor = '#fcd34d';
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+    }
+  }
+
+  // Linha de ECG verde neon
+  function drawMedicalECG() {
+    const group = document.getElementById('groupMedical');
+    if (!group) return;
+    const rect = group.getBoundingClientRect();
+    if (rect.width === 0) return;
+
+    const centerX = rect.left + rect.width * 0.5;
+    const centerY = rect.top + rect.height * 0.5;
+
+    const width = Math.min(rect.width * 0.85, 180);
+    const startX = centerX - width / 2;
+    const baseY = centerY;
+
+    ecgStep = (ecgStep + 2.5) % width;
+
+    ctx.beginPath();
+    ctx.moveTo(startX, baseY);
+
+    for (let x = 0; x < width; x += 3) {
+      let yOffset = 0;
+      const progress = (x - ecgStep + width) % width;
+
+      if (progress > 45 && progress < 52) yOffset = -7;
+      else if (progress >= 52 && progress < 58) yOffset = 9;
+      else if (progress >= 58 && progress < 68) yOffset = -34;
+      else if (progress >= 68 && progress < 74) yOffset = 16;
+      else if (progress >= 80 && progress < 92) yOffset = -10;
+
+      ctx.lineTo(startX + x, baseY + yOffset);
+    }
+
+    ctx.strokeStyle = '#39ff14';
+    ctx.lineWidth = 2.5;
+    ctx.shadowBlur = 12;
+    ctx.shadowColor = '#39ff14';
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
+
+  // Brilho analógico da TV
+  function drawTvGlow() {
+    const group = document.getElementById('groupTv');
+    if (!group) return;
+    const rect = group.getBoundingClientRect();
+    if (rect.width === 0) return;
+
+    const cx = rect.left + rect.width * 0.5;
+    const cy = rect.top + rect.height * 0.5;
+
+    const rad = Math.max(20, 75 + Math.sin(Date.now() / 150) * 8);
+    const grad = ctx.createRadialGradient(cx, cy, 10, cx, cy, rad);
+    grad.addColorStop(0, 'rgba(244, 162, 97, 0.45)');
+    grad.addColorStop(1, 'transparent');
+
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Pulso digital ciano da estação dev
+  function drawDevMatrixGlow() {
+    const group = document.getElementById('groupDev');
+    if (!group) return;
+    const rect = group.getBoundingClientRect();
+    if (rect.width === 0) return;
+
+    const cx = rect.left + rect.width * 0.5;
+    const cy = rect.top + rect.height * 0.5;
+
+    const rad = Math.max(20, 70 + Math.cos(Date.now() / 180) * 6);
+    const grad = ctx.createRadialGradient(cx, cy, 10, cx, cy, rad);
+    grad.addColorStop(0, 'rgba(0, 240, 255, 0.35)');
+    grad.addColorStop(1, 'transparent');
+
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  /* ==========================================================================
+     3. EVENTOS DOS CONTORNOS VETORIAIS
+     ========================================================================== */
+  function initSvgEvents() {
+    const groups = document.querySelectorAll('.object-group');
+
+    groups.forEach(g => {
+      // Efeito sonoro/visual no hover
+      g.addEventListener('mouseenter', () => {
+        const key = g.getAttribute('data-key');
+        activeObjectKey = key;
+        updateNavPills(key);
+      });
+
+      g.addEventListener('mouseleave', () => {
+        // Se o modal não estiver aberto, desativa o efeito ao sair
+        const modal = document.getElementById('objectModalBackdrop');
+        if (!modal || !modal.classList.contains('active')) {
+          activeObjectKey = null;
+          updateNavPills(null);
+        }
+      });
+    });
+  }
+
+  /* ==========================================================================
+     4. MODAL CENTRALIZADO PERFEITAMENTE NO ESQUADRO
+     ========================================================================== */
+  window.selectObject = function (key) {
+    activeObjectKey = key;
+    const data = SCENE_OBJECTS[key];
+    if (!data) return;
+
+    // 1. Atualiza contornos e pílulas
+    document.querySelectorAll('.object-group').forEach(g => {
+      g.classList.toggle('active', g.getAttribute('data-key') === key);
+    });
+    updateNavPills(key);
+
+    // 2. Preenche os campos do Modal Centralizado
+    const badgeElem = document.getElementById('modalBadge');
+    if (badgeElem) badgeElem.innerHTML = data.badge;
+
+    const titleElem = document.getElementById('modalTitle');
+    if (titleElem) titleElem.textContent = data.title;
+
+    const bodyElem = document.getElementById('modalBody');
+    if (bodyElem) bodyElem.innerHTML = data.body;
+
+    const highlightsElem = document.getElementById('modalHighlights');
+    if (highlightsElem) {
+      highlightsElem.innerHTML = data.highlights.map(h => `<li>${h}</li>`).join('');
+    }
+
+    const tagsElem = document.getElementById('modalTags');
+    if (tagsElem) {
+      tagsElem.innerHTML = data.tags.map(t => `<span class="modal-tag">${t}</span>`).join('');
+    }
+
+    const ctaBtn = document.getElementById('modalCta');
+    if (ctaBtn) {
+      ctaBtn.innerHTML = `<i class="fab fa-whatsapp"></i> ${data.ctaText}`;
+      const whatsappUrl = `https://wa.me/${CONTACT_INFO.phoneRaw}?text=${encodeURIComponent(data.whatsappMsg)}`;
+      ctaBtn.href = whatsappUrl;
+    }
+
+    // 3. Abre o Modal Centralizado com animação suave
+    const modal = document.getElementById('objectModalBackdrop');
+    if (modal) {
+      modal.classList.add('active');
+    }
+  };
+
+  function updateNavPills(key) {
+    document.querySelectorAll('.nav-pill-btn').forEach(btn => {
+      btn.classList.toggle('active', key ? btn.getAttribute('onclick')?.includes(key) : false);
+    });
+  }
+
+  window.closeObjectModal = function () {
+    const modal = document.getElementById('objectModalBackdrop');
+    if (modal) modal.classList.remove('active');
+    activeObjectKey = null;
+    document.querySelectorAll('.object-group').forEach(g => g.classList.remove('active'));
+    updateNavPills(null);
+  };
+
+  window.handleBackdropClick = function (e) {
+    if (e.target && e.target.id === 'objectModalBackdrop') {
+      closeObjectModal();
+    }
+  };
+
+  function initKeyboardShortcuts() {
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeObjectModal();
+        closePortfolioModal();
+        closeMiniModal('qrModal');
+        closeMiniModal('leadsModal');
+      }
+    });
+  }
+
+  /* ==========================================================================
+     5. MODAL DE SERVIÇOS & PORTFÓLIO
+     ========================================================================== */
+  window.openPortfolioModal = function () {
+    const modal = document.getElementById('portfolioModal');
+    if (modal) modal.classList.add('active');
+  };
+
+  window.closePortfolioModal = function () {
+    const modal = document.getElementById('portfolioModal');
+    if (modal) modal.classList.remove('active');
+  };
+
+  /* ==========================================================================
+     6. FORMULÁRIOS & WHATSAPP
+     ========================================================================== */
+  function initForms() {
+    const form = document.getElementById('portfolioContactForm');
+    if (!form) return;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('modalName').value.trim();
+      const phone = document.getElementById('modalPhone').value.trim();
+      const service = document.getElementById('modalService').value;
+      const message = document.getElementById('modalMessage').value.trim();
+
+      if (!name || !phone) {
+        showToast('Por favor, informe seu nome e WhatsApp.', 'warn');
+        return;
+      }
+
+      saveLeadLocally({ name, phone, service, message, date: new Date().toLocaleString('pt-BR') });
+
+      const whatsappMsg = [
+        `*Olá Israel! Solicitação de Orçamento pelo Cartão Digital*`,
+        `*Nome / Empresa:* ${name}`,
+        `*WhatsApp:* ${phone}`,
+        `*Área de Interesse:* ${service}`,
+        message ? `*Mensagem:* ${message}` : ''
+      ].filter(Boolean).join('\n\n');
+
+      const whatsappUrl = `https://wa.me/${CONTACT_INFO.phoneRaw}?text=${encodeURIComponent(whatsappMsg)}`;
+
+      showToast('Abrindo WhatsApp para finalizar o contato...', 'success');
+      form.reset();
+
+      setTimeout(() => {
+        window.open(whatsappUrl, '_blank');
+      }, 500);
+    });
+  }
+
+  function saveLeadLocally(lead) {
+    try {
+      const leads = JSON.parse(localStorage.getItem('diacov_leads') || '[]');
+      leads.unshift(lead);
+      localStorage.setItem('diacov_leads', JSON.stringify(leads));
+    } catch (err) {
+      console.warn('Erro ao salvar lead local', err);
     }
   }
 
   /* ==========================================================================
-     2. GERAÇÃO E DOWNLOAD DE CONTATO (.vCard / .vcf)
+     7. vCARD, QR CODE E UTILITÁRIOS
      ========================================================================== */
   window.downloadVCard = function () {
     const vCardData = [
@@ -72,12 +534,12 @@
       `FN:${CONTACT_INFO.name}`,
       `N:Diacov;Israel;;;`,
       `ORG:${CONTACT_INFO.company}`,
-      `TITLE:${CONTACT_INFO.title}`,
+      `TITLE:Criação de Sites, Programas, Google Ads & SEO`,
       `TEL;TYPE=CELL,VOICE,PREF:+${CONTACT_INFO.phoneRaw}`,
       `EMAIL;TYPE=INTERNET,WORK,PREF:${CONTACT_INFO.email}`,
       `ADR;TYPE=WORK:;;Curitiba;PR;;Brasil`,
       `URL:${CONTACT_INFO.website}`,
-      'NOTE:Soluções em TI, Engenharia de Software, Webflow/SEO e Consultoria Especializada.',
+      'NOTE:Criação e Manutenção de Sites, Programas Sob Medida, Google Ads, SEO e Sistemas Médicos (ANS/CNES).',
       'END:VCARD'
     ].join('\r\n');
 
@@ -94,13 +556,10 @@
     showToast('Contato pronto para salvar na sua agenda!', 'success');
   };
 
-  /* ==========================================================================
-     3. COMPARTILHAMENTO NATIVO (WEB SHARE API)
-     ========================================================================== */
   window.shareCard = async function () {
     const shareData = {
-      title: `${CONTACT_INFO.name} - Cartão Digital`,
-      text: `Conecte-se com Israel Diacov - Soluções em TI, Engenharia de Software e Consultoria:`,
+      title: `${CONTACT_INFO.name} - Sites, Softwares, Google Ads & SEO`,
+      text: `Conecte-se com Israel Diacov - Criação e reforma de sites, softwares sob medida, Google Ads e sistemas em conformidade com a ANS/CNES:`,
       url: window.location.href
     };
 
@@ -109,9 +568,7 @@
         await navigator.share(shareData);
         showToast('Cartão compartilhado com sucesso!', 'success');
       } catch (err) {
-        if (err.name !== 'AbortError') {
-          copyCardLink();
-        }
+        if (err.name !== 'AbortError') copyCardLink();
       }
     } else {
       copyCardLink();
@@ -132,9 +589,7 @@
     });
   };
 
-  /* ==========================================================================
-     4. QR CODE DINÂMICO NATIVO (CANVAS)
-     ========================================================================== */
+  // Modais de QR Code e Leads
   window.openQRCodeModal = function () {
     const modal = document.getElementById('qrModal');
     if (!modal) return;
@@ -142,281 +597,137 @@
     renderQRCode(window.location.href);
   };
 
+  window.closeMiniModal = function (id) {
+    const modal = document.getElementById(id);
+    if (modal) modal.classList.remove('active');
+  };
+
   function renderQRCode(text) {
     const canvas = document.getElementById('qrCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    const size = 220;
+    const size = 180;
     canvas.width = size;
     canvas.height = size;
 
-    // Fundo Branco
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, size, size);
 
-    // Carrega QR via gerador rápido embutido ou API visual com fallback
     const img = new Image();
     img.crossOrigin = 'anonymous';
-    img.onload = function () {
-      ctx.drawImage(img, 10, 10, size - 20, size - 20);
-    };
-    img.onerror = function () {
-      // Fallback estético desenhado no Canvas
-      ctx.fillStyle = '#0a0d14';
-      ctx.fillRect(20, 20, 40, 40);
-      ctx.fillRect(size - 60, 20, 40, 40);
-      ctx.fillRect(20, size - 60, 40, 40);
-      ctx.font = '12px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('diacov.com.br', size / 2, size / 2);
-    };
-    // Gerador universal de QR code SVG/PNG
-    img.src = `https://api.qrserver.com/com/1/create-qr-code/?size=200x200&data=${encodeURIComponent(text)}&color=0b0f17`;
+    img.onload = () => ctx.drawImage(img, 10, 10, size - 20, size - 20);
+    img.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(text)}&color=140d0a`;
   }
 
-  /* ==========================================================================
-     5. FILTRO INTERATIVO DE PROJETOS
-     ========================================================================== */
-  function initProjectFilters() {
-    const filterBtns = document.querySelectorAll('.filter-chip');
-    const cards = document.querySelectorAll('.project-card');
-
-    filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        const category = btn.getAttribute('data-filter');
-
-        cards.forEach(card => {
-          const cardCategory = card.getAttribute('data-category');
-          if (category === 'all' || cardCategory === category) {
-            card.style.display = 'flex';
-            card.style.animation = 'fadeIn 0.3s ease-out';
-          } else {
-            card.style.display = 'none';
-          }
-        });
-      });
-    });
-  }
-
-  /* ==========================================================================
-     6. FORMULÁRIO DE CONTATO & ENCAMINHAMENTO WHATSAPP INTELIGENTE
-     ========================================================================== */
-  function initContactForm() {
-    const form = document.getElementById('conciergeForm');
-    if (!form) return;
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const name = document.getElementById('leadName').value.trim();
-      const phone = document.getElementById('leadPhone').value.trim();
-      const service = document.getElementById('leadService').value;
-      const message = document.getElementById('leadMessage').value.trim();
-
-      if (!name || !phone) {
-        showToast('Por favor, preencha nome e telefone.', 'info');
-        return;
-      }
-
-      // Salva no LocalStorage Leads
-      saveLeadLocally({ name, phone, service, message, date: new Date().toLocaleString('pt-BR') });
-
-      // Monta mensagem elegante para o WhatsApp
-      const whatsappMsg = [
-        `*Olá Israel! Solicitação de Atendimento (Cartão Digital)*`,
-        `*Nome:* ${name}`,
-        `*Contato/WhatsApp:* ${phone}`,
-        `*Área de Interesse:* ${service || 'Consultoria / Módulos ERP'}`,
-        message ? `*Mensagem:* ${message}` : ''
-      ].filter(Boolean).join('\n\n');
-
-      const whatsappUrl = `https://wa.me/${CONTACT_INFO.phoneRaw}?text=${encodeURIComponent(whatsappMsg)}`;
-
-      showToast('Redirecionando para o WhatsApp...', 'success');
-
-      // Limpa formulário
-      form.reset();
-
-      // Abre o WhatsApp
-      setTimeout(() => {
-        window.open(whatsappUrl, '_blank');
-      }, 600);
-    });
-  }
-
-  function saveLeadLocally(lead) {
-    try {
-      const existing = JSON.parse(localStorage.getItem('diacov_leads') || '[]');
-      existing.unshift(lead);
-      localStorage.setItem('diacov_leads', JSON.stringify(existing));
-    } catch (e) {
-      console.warn('Erro ao salvar lead localmente:', e);
-    }
-  }
-
-  /* ==========================================================================
-     7. PAINEL DE LEADS EXCLUSIVO (ADMIN MODAL)
-     ========================================================================== */
-  function initLeadManager() {
-    window.openLeadsModal = function () {
-      const modal = document.getElementById('leadsModal');
-      if (!modal) return;
-      renderLeadsTable();
-      modal.classList.add('active');
-    };
-
-    window.exportLeadsCSV = function () {
-      const leads = JSON.parse(localStorage.getItem('diacov_leads') || '[]');
-      if (leads.length === 0) {
-        showToast('Nenhum contato para exportar.', 'info');
-        return;
-      }
-
-      let csv = '\uFEFFData;Nome;Telefone;Serviço;Mensagem\n';
-      leads.forEach(l => {
-        csv += `"${l.date}";"${l.name}";"${l.phone}";"${l.service}";"${(l.message || '').replace(/"/g, '""')}"\n`;
-      });
-
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `leads_diacov_${new Date().toISOString().slice(0, 10)}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      showToast('Planilha CSV exportada com sucesso!', 'success');
-    };
-
-    window.clearAllLeads = function () {
-      if (confirm('Deseja realmente limpar todos os contatos salvos no navegador?')) {
-        localStorage.removeItem('diacov_leads');
-        renderLeadsTable();
-        showToast('Histórico de contatos limpo.', 'info');
-      }
-    };
-  }
+  window.openLeadsModal = function () {
+    const modal = document.getElementById('leadsModal');
+    if (!modal) return;
+    modal.classList.add('active');
+    renderLeadsTable();
+  };
 
   function renderLeadsTable() {
     const container = document.getElementById('leadsTableContainer');
     if (!container) return;
 
     const leads = JSON.parse(localStorage.getItem('diacov_leads') || '[]');
-
     if (leads.length === 0) {
-      container.innerHTML = `
-        <div style="text-align: center; padding: 24px; color: var(--text-muted);">
-          <i class="fas fa-inbox fa-2x" style="margin-bottom: 10px; display: block; opacity: 0.5;"></i>
-          Nenhuma solicitação de contato registrada ainda neste navegador.
-        </div>
-      `;
+      container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.85rem; padding: 12px 0;">Nenhuma solicitação gravada ainda.</p>';
       return;
     }
 
     let html = `
-      <div class="leads-table-wrapper">
-        <table class="leads-table">
+      <div style="max-height: 250px; overflow-y: auto;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem; text-align: left;">
           <thead>
-            <tr>
-              <th>Data</th>
-              <th>Nome</th>
-              <th>Telefone</th>
-              <th>Interesse</th>
-              <th>Ação</th>
+            <tr style="border-bottom: 1px solid var(--hud-border); color: var(--warm-mustard-bright);">
+              <th style="padding: 6px;">Data</th>
+              <th style="padding: 6px;">Nome</th>
+              <th style="padding: 6px;">WhatsApp</th>
+              <th style="padding: 6px;">Interesse</th>
             </tr>
           </thead>
           <tbody>
     `;
 
-    leads.forEach((l) => {
-      const cleanPhone = (l.phone || '').replace(/\D/g, '');
+    leads.forEach(l => {
       html += `
-        <tr>
-          <td><small>${l.date}</small></td>
-          <td><strong>${escapeHtml(l.name)}</strong></td>
-          <td>${escapeHtml(l.phone)}</td>
-          <td><span class="tech-tag">${escapeHtml(l.service || 'Geral')}</span></td>
-          <td>
-            <a href="https://wa.me/55${cleanPhone}" target="_blank" class="btn btn-sm btn-gold" style="padding: 4px 8px; font-size: 0.75rem;">
-              <i class="fab fa-whatsapp"></i> Chamar
-            </a>
-          </td>
+        <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+          <td style="padding: 6px; color: var(--text-subtle);">${l.date || '-'}</td>
+          <td style="padding: 6px; font-weight: 700;">${l.name}</td>
+          <td style="padding: 6px;">${l.phone}</td>
+          <td style="padding: 6px; color: var(--warm-orange);">${l.service}</td>
         </tr>
       `;
     });
 
-    html += `
-          </tbody>
-        </table>
-      </div>
-    `;
-
+    html += '</tbody></table></div>';
     container.innerHTML = html;
   }
 
-  function escapeHtml(str) {
-    return String(str || '').replace(/[&<>"']/g, function (m) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
-    });
-  }
+  window.clearAllLeads = function () {
+    if (confirm('Deseja limpar todos os registros de contatos salvos no navegador?')) {
+      localStorage.removeItem('diacov_leads');
+      renderLeadsTable();
+      showToast('Registros de contatos limpos.', 'info');
+    }
+  };
 
-  /* ==========================================================================
-     8. MODAIS E TOASTS
-     ========================================================================== */
-  function initModals() {
-    document.querySelectorAll('.modal-close').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.modal-backdrop').forEach(m => m.classList.remove('active'));
-      });
-    });
-
-    document.querySelectorAll('.modal-backdrop').forEach(modal => {
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-          modal.classList.remove('active');
-        }
-      });
-    });
-  }
-
-  function showToast(message, type = 'info') {
-    let container = document.querySelector('.toast-container');
-    if (!container) {
-      container = document.createElement('div');
-      container.className = 'toast-container';
-      document.body.appendChild(container);
+  window.exportLeadsCSV = function () {
+    const leads = JSON.parse(localStorage.getItem('diacov_leads') || '[]');
+    if (leads.length === 0) {
+      showToast('Não há registros para exportar.', 'info');
+      return;
     }
 
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    const icon = type === 'success' ? 'fa-check-circle' : 'fa-info-circle';
-    toast.innerHTML = `<i class="fas ${icon}"></i> <span>${message}</span>`;
+    let csv = 'Data;Nome;Telefone;Servico;Mensagem\n';
+    leads.forEach(l => {
+      csv += `"${l.date || ''}";"${l.name}";"${l.phone}";"${l.service}";"${(l.message || '').replace(/"/g, '""')}"\n`;
+    });
 
-    container.appendChild(toast);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'contatos_diacov.csv';
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  /* ==========================================================================
+     8. TOAST NOTIFICATIONS
+     ========================================================================== */
+  function showToast(msg, type = 'info') {
+    const shelf = document.getElementById('toastShelf');
+    if (!shelf) return;
+
+    const toast = document.createElement('div');
+    toast.className = 'toast-msg';
+
+    let icon = 'fas fa-info-circle';
+    if (type === 'success') icon = 'fas fa-check-circle';
+    if (type === 'warn') icon = 'fas fa-exclamation-triangle';
+
+    toast.innerHTML = `<i class="${icon}" style="color: var(--warm-mustard-bright);"></i> <span>${msg}</span>`;
+    shelf.appendChild(toast);
 
     setTimeout(() => {
       toast.style.opacity = '0';
       toast.style.transform = 'translateY(10px)';
-      toast.style.transition = 'all 0.3s ease';
+      toast.style.transition = 'all 0.3s ease-out';
       setTimeout(() => toast.remove(), 300);
-    }, 3500);
+    }, 3200);
   }
 
   /* ==========================================================================
-     9. SERVICE WORKER / PWA (OPCIONAL / OFFLINE)
+     9. SERVICE WORKER PWA
      ========================================================================== */
   function initServiceWorker() {
-    if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
-      navigator.serviceWorker.register('./sw.js').catch(() => {
-        // Modo silencioso caso esteja rodando localmente sem HTTPS
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(err => {
+        console.warn('ServiceWorker skipped:', err);
       });
     }
   }
 
-  // Exporta globalmente para uso em onclick nos botões
-  window.showToast = showToast;
 })();

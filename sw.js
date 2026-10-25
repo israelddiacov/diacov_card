@@ -1,11 +1,13 @@
 // Service Worker para Cache e Funcionamento Offline do Cartão Digital Diacov
-const CACHE_NAME = 'diacov-card-v1';
+const CACHE_NAME = 'diacov-card-v2';
 const ASSETS = [
   './',
   './index.html',
   './css/style.css',
   './js/app.js',
-  './manifest.json'
+  './manifest.json',
+  './assets/favicon.svg',
+  './assets/retro_room_60s.jpg'
 ];
 
 self.addEventListener('install', (event) => {
