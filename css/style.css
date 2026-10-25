@@ -1,7 +1,7 @@
 /* ==========================================================================
    ISRAEL D. DIACOV - EXPERIÊNCIA IMERSIVA RETRÔ ANOS 60 FULLSCREEN
    - Fundo 100% da janela do navegador (100vw / 100vh)
-   - Contornos vetoriais destacados sobre os objetos (hover sutil e elegante)
+   - Contornos vetoriais destacados sobre os objetos (hover sutil e alinhado)
    - Efeitos especiais dinâmicos (Raios no Rádio, ECG nos Aparelhos Médicos, TV, Partículas)
    - Modal Centralizado Perfeitamente no Esquadro com Conteúdo Rico
    - Foco comercial: Sites, Programas, Google Ads, SEO e Sistemas Médicos (ANS, CNES, CBHPM)
@@ -136,7 +136,7 @@ html, body {
 }
 
 /* ==========================================================================
-   CONTORNOS VETORIAIS DOS OBJETOS (LIMPOS EM REPOUSO, BRILHAM NO HOVER/TOQUE)
+   CONTORNOS VETORIAIS DOS OBJETOS (ALINHADOS E DISCRETOS EM REPOUSO)
    ========================================================================== */
 .object-group {
   pointer-events: all;
@@ -144,12 +144,12 @@ html, body {
   outline: none;
 }
 
-/* Contorno sutil em repouso */
+/* Contorno sutil e suave em repouso */
 .object-contour {
-  fill: rgba(233, 168, 37, 0.01);
-  stroke: rgba(233, 168, 37, 0.28);
+  fill: rgba(233, 168, 37, 0.02);
+  stroke: rgba(233, 168, 37, 0.35);
   stroke-width: 1.8px;
-  stroke-dasharray: 6 6;
+  stroke-dasharray: 4 4;
   transition: all var(--transition-fast);
 }
 
@@ -157,37 +157,37 @@ html, body {
 .object-group:hover .object-contour,
 .object-group.active .object-contour,
 .object-group:focus .object-contour {
-  fill: rgba(233, 168, 37, 0.18);
+  fill: rgba(233, 168, 37, 0.22);
   stroke: var(--warm-mustard-bright);
-  stroke-width: 3.5px;
+  stroke-width: 3px;
   stroke-dasharray: none;
-  filter: drop-shadow(0 0 14px var(--warm-mustard)) drop-shadow(0 0 24px var(--warm-terracotta));
+  filter: drop-shadow(0 0 12px var(--warm-mustard)) drop-shadow(0 0 20px var(--warm-terracotta));
 }
 
 #groupRadio:hover .object-contour,
 #groupRadio.active .object-contour {
   stroke: #ffda6a;
-  filter: drop-shadow(0 0 16px #ffc83b) drop-shadow(0 0 25px #00f0ff);
+  filter: drop-shadow(0 0 14px #ffc83b) drop-shadow(0 0 22px #00f0ff);
 }
 
 #groupMedical:hover .object-contour,
 #groupMedical.active .object-contour {
   stroke: var(--retro-neon-green);
-  fill: rgba(57, 255, 20, 0.15);
-  filter: drop-shadow(0 0 16px var(--retro-neon-green));
+  fill: rgba(57, 255, 20, 0.18);
+  filter: drop-shadow(0 0 14px var(--retro-neon-green));
 }
 
 #groupTv:hover .object-contour,
 #groupTv.active .object-contour {
   stroke: var(--warm-orange);
-  filter: drop-shadow(0 0 16px var(--warm-orange)) drop-shadow(0 0 25px var(--warm-terracotta));
+  filter: drop-shadow(0 0 14px var(--warm-orange)) drop-shadow(0 0 22px var(--warm-terracotta));
 }
 
 #groupDev:hover .object-contour,
 #groupDev.active .object-contour {
   stroke: #00f0ff;
-  fill: rgba(0, 240, 255, 0.15);
-  filter: drop-shadow(0 0 16px #00f0ff);
+  fill: rgba(0, 240, 255, 0.18);
+  filter: drop-shadow(0 0 14px #00f0ff);
 }
 
 /* Rótulo Flutuante Estilizado que surge ao passar o mouse */
@@ -674,7 +674,70 @@ html, body {
 }
 
 /* ==========================================================================
-   MODAL COMPLETO DE SERVIÇOS & PORTFÓLIO (SLIDE-OVER / OVERLAY)
+   PAINEL DE AJUSTE FINO VISUAL (CALIBRADOR INTERATIVO)
+   ========================================================================== */
+.calibrator-panel {
+  position: fixed;
+  bottom: 80px;
+  left: 20px;
+  background: rgba(18, 11, 7, 0.95);
+  border: 2px solid var(--warm-mustard);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  z-index: 400;
+  max-width: 360px;
+  width: 90vw;
+  box-shadow: var(--shadow-hud);
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 0.8rem;
+  animation: modalPopIn 0.2s ease-out;
+}
+
+.calibrator-panel.active {
+  display: flex;
+}
+
+.calibrator-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 800;
+  color: var(--warm-mustard-bright);
+}
+
+.calibrator-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.calibrator-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.calibrator-row label {
+  width: 75px;
+  font-weight: 700;
+  color: var(--warm-orange);
+}
+
+.calibrator-row input[type="range"] {
+  flex: 1;
+}
+
+.calibrator-row span {
+  width: 40px;
+  text-align: right;
+  font-family: var(--font-mono);
+  color: var(--text-main);
+}
+
+/* ==========================================================================
+   MODAL COMPLETO DE SERVIÇOS & PORTFÓLIO
    ========================================================================== */
 .portfolio-modal-overlay {
   position: fixed;

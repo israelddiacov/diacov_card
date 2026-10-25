@@ -42,7 +42,7 @@
       highlights: [
         '<i class="fas fa-check-circle"></i> Criação de novos sites modernos, velozes e responsivos no celular',
         '<i class="fas fa-check-circle"></i> Reformas completas, ajustes de layout e correções de bugs em sites existentes',
-        '<i class="fas fa-check-circle"></i> Programas desktop e web sob medida (Windows, Linux e Android)',
+        '<i class="fas fa-check-circle"></i> Softwares desktop e web sob medida (Windows, Linux e Android)',
         '<i class="fas fa-check-circle"></i> Bancos de dados relacionais robustos (PostgreSQL, Oracle e SQLite)',
         '<i class="fas fa-check-circle"></i> Deploys automatizados com Docker e servidores Linux Nginx'
       ],
@@ -83,6 +83,18 @@
       ctaText: 'Colocar Minha Empresa no Google via WhatsApp',
       whatsappMsg: 'Olá Israel! Gostaria de colocar minha empresa no topo do Google com campanhas de Google Ads e SEO.'
     }
+  };
+
+  // Coordenadas Calibradas na Imagem Base 1376x768
+  const CALIBRATION = {
+    antennaX: 155,
+    antennaY: 330,
+    ecgX: 850,
+    ecgY: 362,
+    lampX: 525,
+    lampY: 350,
+    tvX: 1190,
+    tvY: 415
   };
 
   // Variáveis de Estado
@@ -130,7 +142,22 @@
   }
 
   /* ==========================================================================
-     2. EFEITOS ESPECIAIS NO CANVAS FULLSCREEN (POEIRA, RAIOS, ECG, BRILHO)
+     2. CONVERSÃO MATRICIAL: COORDENADAS SVG (1376x768) PARA TELA EM PIXELS
+     ========================================================================== */
+  function svgToScreen(x, y) {
+    const svg = document.getElementById('sceneSvg');
+    if (!svg || !svg.createSVGPoint || !svg.getScreenCTM) {
+      return { x: (x / 1376) * window.innerWidth, y: (y / 768) * window.innerHeight };
+    }
+    const pt = svg.createSVGPoint();
+    pt.x = x;
+    pt.y = y;
+    const ctm = svg.getScreenCTM();
+    return pt.matrixTransform(ctm);
+  }
+
+  /* ==========================================================================
+     3. EFEITOS ESPECIAIS NO CANVAS FULLSCREEN (POEIRA, RAIOS, ECG, BRILHO)
      ========================================================================== */
   function initCanvasEffects() {
     canvas = document.getElementById('sceneCanvas');
@@ -180,12 +207,12 @@
       ctx.fill();
     }
 
-    // 2. Efeito do Rádio: Raios Elétricos e Faíscas
+    // 2. Efeito do Rádio: Raios Elétricos e Faíscas Exatamente na Antena
     if (activeObjectKey === 'radio') {
       drawRadioLightning();
     }
 
-    // 3. Efeito dos Aparelhos Médicos: ECG Neon Verde
+    // 3. Efeito dos Aparelhos Médicos: ECG Neon Verde Exatamente na Tela do Monitor
     if (activeObjectKey === 'medical') {
       drawMedicalECG();
     }
@@ -195,7 +222,7 @@
       drawTvGlow();
     }
 
-    // 5. Efeito da Estação Dev: Pulso Digital Ciano
+    // 5. Efeito da Estação Dev: Pulso e Brilho da Lâmpada sobre a Máquina de Escrever
     if (activeObjectKey === 'dev') {
       drawDevMatrixGlow();
     }
@@ -203,15 +230,11 @@
     requestAnimationFrame(startAnimationLoop);
   }
 
-  // Raios e faíscas dinâmicas no rádio antigo
+  // Raios e faíscas dinâmicas a partir da ponta da antena do rádio
   function drawRadioLightning() {
-    const group = document.getElementById('groupRadio');
-    if (!group) return;
-    const rect = group.getBoundingClientRect();
-    if (rect.width === 0) return;
-
-    const startX = rect.left + rect.width * 0.5;
-    const startY = rect.top + rect.height * 0.35;
+    const p = svgToScreen(CALIBRATION.antennaX, CALIBRATION.antennaY);
+    const startX = p.x;
+    const startY = p.y;
 
     // Faíscas
     if (Math.random() < 0.45) {
@@ -244,14 +267,14 @@
       if (s.life <= 0) sparks.splice(i, 1);
     }
 
-    // Arcos elétricos ramificados
+    // Arcos elétricos ramificados a partir da ponta da antena
     if (Math.random() < 0.7) {
       const rayCount = Math.floor(Math.random() * 3) + 2;
       for (let r = 0; r < rayCount; r++) {
         let curX = startX;
         let curY = startY;
-        const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.8;
-        const length = 55 + Math.random() * 80;
+        const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.6;
+        const length = 50 + Math.random() * 75;
         const steps = 7;
 
         ctx.beginPath();
@@ -259,8 +282,8 @@
 
         for (let s = 0; s < steps; s++) {
           const segLen = length / steps;
-          curX += Math.cos(angle) * segLen + (Math.random() - 0.5) * 18;
-          curY += Math.sin(angle) * segLen + (Math.random() - 0.5) * 18;
+          curX += Math.cos(angle) * segLen + (Math.random() - 0.5) * 16;
+          curY += Math.sin(angle) * segLen + (Math.random() - 0.5) * 16;
           ctx.lineTo(curX, curY);
         }
 
@@ -274,41 +297,36 @@
     }
   }
 
-  // Linha de ECG verde neon
+  // Linha de ECG verde neon exatamente na tela do monitor médico
   function drawMedicalECG() {
-    const group = document.getElementById('groupMedical');
-    if (!group) return;
-    const rect = group.getBoundingClientRect();
-    if (rect.width === 0) return;
+    const center = svgToScreen(CALIBRATION.ecgX, CALIBRATION.ecgY);
+    const pRight = svgToScreen(CALIBRATION.ecgX + 35, CALIBRATION.ecgY);
+    const screenWidth = Math.max(50, Math.abs(pRight.x - center.x) * 2);
 
-    const centerX = rect.left + rect.width * 0.5;
-    const centerY = rect.top + rect.height * 0.5;
+    const startX = center.x - screenWidth / 2;
+    const baseY = center.y;
 
-    const width = Math.min(rect.width * 0.85, 180);
-    const startX = centerX - width / 2;
-    const baseY = centerY;
-
-    ecgStep = (ecgStep + 2.5) % width;
+    ecgStep = (ecgStep + 2) % screenWidth;
 
     ctx.beginPath();
     ctx.moveTo(startX, baseY);
 
-    for (let x = 0; x < width; x += 3) {
+    for (let x = 0; x < screenWidth; x += 2.5) {
       let yOffset = 0;
-      const progress = (x - ecgStep + width) % width;
+      const progress = (x - ecgStep + screenWidth) % screenWidth;
 
-      if (progress > 45 && progress < 52) yOffset = -7;
-      else if (progress >= 52 && progress < 58) yOffset = 9;
-      else if (progress >= 58 && progress < 68) yOffset = -34;
-      else if (progress >= 68 && progress < 74) yOffset = 16;
-      else if (progress >= 80 && progress < 92) yOffset = -10;
+      if (progress > screenWidth * 0.35 && progress < screenWidth * 0.42) yOffset = -5;
+      else if (progress >= screenWidth * 0.42 && progress < screenWidth * 0.48) yOffset = 7;
+      else if (progress >= screenWidth * 0.48 && progress < screenWidth * 0.58) yOffset = -22;
+      else if (progress >= screenWidth * 0.58 && progress < screenWidth * 0.65) yOffset = 12;
+      else if (progress >= screenWidth * 0.70 && progress < screenWidth * 0.82) yOffset = -8;
 
       ctx.lineTo(startX + x, baseY + yOffset);
     }
 
     ctx.strokeStyle = '#39ff14';
-    ctx.lineWidth = 2.5;
-    ctx.shadowBlur = 12;
+    ctx.lineWidth = 2.2;
+    ctx.shadowBlur = 10;
     ctx.shadowColor = '#39ff14';
     ctx.stroke();
     ctx.shadowBlur = 0;
@@ -316,54 +334,41 @@
 
   // Brilho analógico da TV
   function drawTvGlow() {
-    const group = document.getElementById('groupTv');
-    if (!group) return;
-    const rect = group.getBoundingClientRect();
-    if (rect.width === 0) return;
+    const center = svgToScreen(CALIBRATION.tvX, CALIBRATION.tvY);
+    const rad = Math.max(25, 70 + Math.sin(Date.now() / 150) * 8);
 
-    const cx = rect.left + rect.width * 0.5;
-    const cy = rect.top + rect.height * 0.5;
-
-    const rad = Math.max(20, 75 + Math.sin(Date.now() / 150) * 8);
-    const grad = ctx.createRadialGradient(cx, cy, 10, cx, cy, rad);
+    const grad = ctx.createRadialGradient(center.x, center.y, 10, center.x, center.y, rad);
     grad.addColorStop(0, 'rgba(244, 162, 97, 0.45)');
     grad.addColorStop(1, 'transparent');
 
     ctx.fillStyle = grad;
     ctx.beginPath();
-    ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+    ctx.arc(center.x, center.y, rad, 0, Math.PI * 2);
     ctx.fill();
   }
 
-  // Pulso digital ciano da estação dev
+  // Brilho da lâmpada sobre a máquina de escrever
   function drawDevMatrixGlow() {
-    const group = document.getElementById('groupDev');
-    if (!group) return;
-    const rect = group.getBoundingClientRect();
-    if (rect.width === 0) return;
+    const center = svgToScreen(CALIBRATION.lampX, CALIBRATION.lampY);
+    const rad = Math.max(25, 65 + Math.cos(Date.now() / 180) * 6);
 
-    const cx = rect.left + rect.width * 0.5;
-    const cy = rect.top + rect.height * 0.5;
-
-    const rad = Math.max(20, 70 + Math.cos(Date.now() / 180) * 6);
-    const grad = ctx.createRadialGradient(cx, cy, 10, cx, cy, rad);
-    grad.addColorStop(0, 'rgba(0, 240, 255, 0.35)');
+    const grad = ctx.createRadialGradient(center.x, center.y, 8, center.x, center.y, rad);
+    grad.addColorStop(0, 'rgba(0, 240, 255, 0.38)');
     grad.addColorStop(1, 'transparent');
 
     ctx.fillStyle = grad;
     ctx.beginPath();
-    ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+    ctx.arc(center.x, center.y, rad, 0, Math.PI * 2);
     ctx.fill();
   }
 
   /* ==========================================================================
-     3. EVENTOS DOS CONTORNOS VETORIAIS
+     4. EVENTOS DOS CONTORNOS VETORIAIS
      ========================================================================== */
   function initSvgEvents() {
     const groups = document.querySelectorAll('.object-group');
 
     groups.forEach(g => {
-      // Efeito sonoro/visual no hover
       g.addEventListener('mouseenter', () => {
         const key = g.getAttribute('data-key');
         activeObjectKey = key;
@@ -371,7 +376,6 @@
       });
 
       g.addEventListener('mouseleave', () => {
-        // Se o modal não estiver aberto, desativa o efeito ao sair
         const modal = document.getElementById('objectModalBackdrop');
         if (!modal || !modal.classList.contains('active')) {
           activeObjectKey = null;
@@ -382,7 +386,7 @@
   }
 
   /* ==========================================================================
-     4. MODAL CENTRALIZADO PERFEITAMENTE NO ESQUADRO
+     5. MODAL CENTRALIZADO PERFEITAMENTE NO ESQUADRO
      ========================================================================== */
   window.selectObject = function (key) {
     activeObjectKey = key;
@@ -449,6 +453,54 @@
     }
   };
 
+  /* ==========================================================================
+     6. CALIBRADOR VISUAL INTERATIVO (AJUSTE FINO)
+     ========================================================================== */
+  window.toggleCalibrator = function () {
+    const panel = document.getElementById('calibratorPanel');
+    if (!panel) return;
+    panel.classList.toggle('active');
+  };
+
+  window.updateCalibrator = function () {
+    const antY = parseInt(document.getElementById('sliderAntennaY').value, 10);
+    const ecgY = parseInt(document.getElementById('sliderEcgY').value, 10);
+    const lampX = parseInt(document.getElementById('sliderLampX').value, 10);
+    const lampY = parseInt(document.getElementById('sliderLampY').value, 10);
+
+    CALIBRATION.antennaY = antY;
+    CALIBRATION.ecgY = ecgY;
+    CALIBRATION.lampX = lampX;
+    CALIBRATION.lampY = lampY;
+
+    document.getElementById('valAntennaY').textContent = antY;
+    document.getElementById('valEcgY').textContent = ecgY;
+    document.getElementById('valLampX').textContent = lampX;
+    document.getElementById('valLampY').textContent = lampY;
+  };
+
+  window.copyCalibratorValues = function () {
+    const txt = JSON.stringify(CALIBRATION, null, 2);
+    navigator.clipboard.writeText(txt).then(() => {
+      showToast('Coordenadas copiadas para a área de transferência!', 'success');
+    });
+  };
+
+  window.resetCalibratorValues = function () {
+    CALIBRATION.antennaY = 330;
+    CALIBRATION.ecgY = 362;
+    CALIBRATION.lampX = 525;
+    CALIBRATION.lampY = 350;
+
+    document.getElementById('sliderAntennaY').value = 330;
+    document.getElementById('sliderEcgY').value = 362;
+    document.getElementById('sliderLampX').value = 525;
+    document.getElementById('sliderLampY').value = 350;
+
+    window.updateCalibrator();
+    showToast('Valores restaurados ao padrão.', 'info');
+  };
+
   function initKeyboardShortcuts() {
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
@@ -456,12 +508,18 @@
         closePortfolioModal();
         closeMiniModal('qrModal');
         closeMiniModal('leadsModal');
+        const cal = document.getElementById('calibratorPanel');
+        if (cal) cal.classList.remove('active');
+      }
+      // Atalho secreto Ctrl + Alt + A para calibrador
+      if (e.ctrlKey && e.altKey && (e.key === 'a' || e.key === 'A')) {
+        toggleCalibrator();
       }
     });
   }
 
   /* ==========================================================================
-     5. MODAL DE SERVIÇOS & PORTFÓLIO
+     7. MODAL DE SERVIÇOS & PORTFÓLIO
      ========================================================================== */
   window.openPortfolioModal = function () {
     const modal = document.getElementById('portfolioModal');
@@ -474,7 +532,7 @@
   };
 
   /* ==========================================================================
-     6. FORMULÁRIOS & WHATSAPP
+     8. FORMULÁRIOS & WHATSAPP
      ========================================================================== */
   function initForms() {
     const form = document.getElementById('portfolioContactForm');
@@ -525,7 +583,7 @@
   }
 
   /* ==========================================================================
-     7. vCARD, QR CODE E UTILITÁRIOS
+     9. vCARD, QR CODE E UTILITÁRIOS
      ========================================================================== */
   window.downloadVCard = function () {
     const vCardData = [
@@ -695,8 +753,8 @@
   };
 
   /* ==========================================================================
-     8. TOAST NOTIFICATIONS
-     ========================================================================== */
+     10. TOAST NOTIFICATIONS
+     ========================================================================= */
   function showToast(msg, type = 'info') {
     const shelf = document.getElementById('toastShelf');
     if (!shelf) return;
@@ -720,7 +778,7 @@
   }
 
   /* ==========================================================================
-     9. SERVICE WORKER PWA
+     11. SERVICE WORKER PWA
      ========================================================================== */
   function initServiceWorker() {
     if ('serviceWorker' in navigator) {
