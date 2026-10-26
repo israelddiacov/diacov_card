@@ -85,17 +85,98 @@
     }
   };
 
-  // Coordenadas Calibradas na Imagem Base 1376x768
-  const CALIBRATION = {
-    antennaX: 155,
-    antennaY: 330,
-    ecgX: 850,
-    ecgY: 362,
-    lampX: 525,
-    lampY: 350,
-    tvX: 1190,
-    tvY: 415
+  // Configuração Padrão das Coordenadas (Base 1376x768)
+  // Incorpora valores afinados pelo usuário e os 4 cantos livres para cada moldura
+  const DEFAULT_CALIBRATION = {
+    radio: {
+      name: 'Rádio Retrô (Mensageria)',
+      effectName: 'Antena do Rádio',
+      effect: { x: 155, y: 326 },
+      corners: {
+        tl: { x: 120, y: 365 },
+        tr: { x: 225, y: 365 },
+        br: { x: 225, y: 465 },
+        bl: { x: 120, y: 465 }
+      }
+    },
+    dev: {
+      name: 'Mesa / Estação Dev',
+      effectName: 'Lâmpada da Mesa',
+      effect: { x: 550, y: 350 },
+      corners: {
+        tl: { x: 460, y: 430 },
+        tr: { x: 595, y: 430 },
+        br: { x: 595, y: 515 },
+        bl: { x: 460, y: 515 }
+      }
+    },
+    medical: {
+      name: 'Monitor Médico (Saúde)',
+      effectName: 'Tela do ECG',
+      effect: { x: 850, y: 362 },
+      corners: {
+        tl: { x: 815, y: 335 },
+        tr: { x: 905, y: 335 },
+        br: { x: 905, y: 425 },
+        bl: { x: 815, y: 425 }
+      }
+    },
+    tv: {
+      name: 'TV Retrô (Google Ads / SEO)',
+      effectName: 'Centro da Tela CRT',
+      effect: { x: 1190, y: 415 },
+      corners: {
+        tl: { x: 1115, y: 340 },
+        tr: { x: 1265, y: 340 },
+        br: { x: 1265, y: 490 },
+        bl: { x: 1115, y: 490 }
+      }
+    }
   };
+
+  // Carrega configurações customizadas salvas no navegador ou padrões
+  let CALIBRATION = loadSavedCalibration();
+  let activeCalibratorTab = 'radio';
+  let isDraggingHandle = false;
+  let activeDragHandleKey = null;
+
+  function loadSavedCalibration() {
+    try {
+      const saved = localStorage.getItem('diacov_calibration_v4');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const merged = JSON.parse(JSON.stringify(DEFAULT_CALIBRATION));
+        for (const k of ['radio', 'dev', 'medical', 'tv']) {
+          if (parsed[k]) {
+            if (parsed[k].effect) {
+              merged[k].effect.x = Number(parsed[k].effect.x) ?? merged[k].effect.x;
+              merged[k].effect.y = Number(parsed[k].effect.y) ?? merged[k].effect.y;
+            }
+            if (parsed[k].corners) {
+              for (const c of ['tl', 'tr', 'br', 'bl']) {
+                if (parsed[k].corners[c]) {
+                  merged[k].corners[c].x = Number(parsed[k].corners[c].x) ?? merged[k].corners[c].x;
+                  merged[k].corners[c].y = Number(parsed[k].corners[c].y) ?? merged[k].corners[c].y;
+                }
+              }
+            }
+          }
+        }
+        return merged;
+      }
+    } catch (e) {
+      console.warn('Erro ao carregar calibração salva', e);
+    }
+    return JSON.parse(JSON.stringify(DEFAULT_CALIBRATION));
+  }
+
+  function saveCalibrationToStorage() {
+    try {
+      localStorage.setItem('diacov_calibration_v4', JSON.stringify(CALIBRATION));
+    } catch (e) {
+      console.warn('Erro ao salvar calibração no cache', e);
+    }
+  }
 
   // Variáveis de Estado
   let activeObjectKey = null;
@@ -109,6 +190,8 @@
     initTheme();
     initCanvasEffects();
     initSvgEvents();
+    applyCalibration();
+    initCalibratorInteractions();
     initForms();
     initKeyboardShortcuts();
     initServiceWorker();
@@ -142,7 +225,7 @@
   }
 
   /* ==========================================================================
-     2. CONVERSÃO MATRICIAL: COORDENADAS SVG (1376x768) PARA TELA EM PIXELS
+     2. CONVERSÃO MATRICIAL: COORDENADAS SVG (1376x768) PARA TELA EM PIXELS E VICE-VERSA
      ========================================================================== */
   function svgToScreen(x, y) {
     const svg = document.getElementById('sceneSvg');
@@ -156,6 +239,18 @@
     return pt.matrixTransform(ctm);
   }
 
+  function screenToSvg(screenX, screenY) {
+    const svg = document.getElementById('sceneSvg');
+    if (!svg || !svg.createSVGPoint || !svg.getScreenCTM) {
+      return { x: (screenX / window.innerWidth) * 1376, y: (screenY / window.innerHeight) * 768 };
+    }
+    const pt = svg.createSVGPoint();
+    pt.x = screenX;
+    pt.y = screenY;
+    const ctm = svg.getScreenCTM().inverse();
+    return pt.matrixTransform(ctm);
+  }
+
   /* ==========================================================================
      3. EFEITOS ESPECIAIS NO CANVAS FULLSCREEN (POEIRA, RAIOS, ECG, BRILHO)
      ========================================================================== */
@@ -165,7 +260,10 @@
     ctx = canvas.getContext('2d');
 
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      applyCalibration();
+    });
 
     // 35 partículas de poeira dourada flutuando com a luz cinematográfica
     particles = [];
@@ -232,7 +330,7 @@
 
   // Raios e faíscas dinâmicas a partir da ponta da antena do rádio
   function drawRadioLightning() {
-    const p = svgToScreen(CALIBRATION.antennaX, CALIBRATION.antennaY);
+    const p = svgToScreen(CALIBRATION.radio.effect.x, CALIBRATION.radio.effect.y);
     const startX = p.x;
     const startY = p.y;
 
@@ -299,8 +397,8 @@
 
   // Linha de ECG verde neon exatamente na tela do monitor médico
   function drawMedicalECG() {
-    const center = svgToScreen(CALIBRATION.ecgX, CALIBRATION.ecgY);
-    const pRight = svgToScreen(CALIBRATION.ecgX + 35, CALIBRATION.ecgY);
+    const center = svgToScreen(CALIBRATION.medical.effect.x, CALIBRATION.medical.effect.y);
+    const pRight = svgToScreen(CALIBRATION.medical.effect.x + 35, CALIBRATION.medical.effect.y);
     const screenWidth = Math.max(50, Math.abs(pRight.x - center.x) * 2);
 
     const startX = center.x - screenWidth / 2;
@@ -334,7 +432,7 @@
 
   // Brilho analógico da TV
   function drawTvGlow() {
-    const center = svgToScreen(CALIBRATION.tvX, CALIBRATION.tvY);
+    const center = svgToScreen(CALIBRATION.tv.effect.x, CALIBRATION.tv.effect.y);
     const rad = Math.max(25, 70 + Math.sin(Date.now() / 150) * 8);
 
     const grad = ctx.createRadialGradient(center.x, center.y, 10, center.x, center.y, rad);
@@ -349,7 +447,7 @@
 
   // Brilho da lâmpada sobre a máquina de escrever
   function drawDevMatrixGlow() {
-    const center = svgToScreen(CALIBRATION.lampX, CALIBRATION.lampY);
+    const center = svgToScreen(CALIBRATION.dev.effect.x, CALIBRATION.dev.effect.y);
     const rad = Math.max(25, 65 + Math.cos(Date.now() / 180) * 6);
 
     const grad = ctx.createRadialGradient(center.x, center.y, 8, center.x, center.y, rad);
@@ -389,6 +487,13 @@
      5. MODAL CENTRALIZADO PERFEITAMENTE NO ESQUADRO
      ========================================================================== */
   window.selectObject = function (key) {
+    // Se o calibrador estiver ativo, o clique seleciona o objeto para calibração
+    const calPanel = document.getElementById('calibratorPanel');
+    if (calPanel && calPanel.classList.contains('active')) {
+      setCalibratorObject(key);
+      return;
+    }
+
     activeObjectKey = key;
     const data = SCENE_OBJECTS[key];
     if (!data) return;
@@ -454,51 +559,253 @@
   };
 
   /* ==========================================================================
-     6. CALIBRADOR VISUAL INTERATIVO (AJUSTE FINO)
+     6. CALIBRADOR VISUAL INTERATIVO (4 CANTOS LIVRES + PONTO DE EFEITO)
      ========================================================================== */
+  function applyCalibration() {
+    const mapping = {
+      radio: { poly: 'contourRadio', label: 'labelRadio' },
+      dev: { poly: 'contourDev', label: 'labelDev' },
+      medical: { poly: 'contourMedical', label: 'labelMedical' },
+      tv: { poly: 'contourTv', label: 'labelTv' }
+    };
+
+    for (const [key, ids] of Object.entries(mapping)) {
+      const obj = CALIBRATION[key];
+      if (!obj) continue;
+
+      const poly = document.getElementById(ids.poly);
+      if (poly) {
+        const c = obj.corners;
+        poly.setAttribute('points', `${c.tl.x},${c.tl.y} ${c.tr.x},${c.tr.y} ${c.br.x},${c.br.y} ${c.bl.x},${c.bl.y}`);
+      }
+
+      const label = document.getElementById(ids.label);
+      if (label) {
+        const c = obj.corners;
+        const centerX = Math.round((c.tl.x + c.tr.x) / 2);
+        const topY = Math.round(Math.min(c.tl.y, c.tr.y) - 20);
+        label.setAttribute('transform', `translate(${centerX}, ${topY})`);
+      }
+    }
+
+    updateCalibratorHandles();
+  }
+
+  function updateCalibratorHandles() {
+    const layer = document.getElementById('calibratorHandles');
+    const panel = document.getElementById('calibratorPanel');
+    if (!layer || !panel || !panel.classList.contains('active')) {
+      if (layer) layer.style.display = 'none';
+      return;
+    }
+    layer.style.display = 'block';
+
+    const obj = CALIBRATION[activeCalibratorTab];
+    if (!obj) return;
+
+    const c = obj.corners;
+    setHandlePos('handleTL', c.tl.x, c.tl.y);
+    setHandlePos('handleTR', c.tr.x, c.tr.y);
+    setHandlePos('handleBR', c.br.x, c.br.y);
+    setHandlePos('handleBL', c.bl.x, c.bl.y);
+    setHandlePos('handleEffect', obj.effect.x, obj.effect.y);
+
+    const guide = document.getElementById('handleGuideLine');
+    if (guide) {
+      guide.setAttribute('points', `${c.tl.x},${c.tl.y} ${c.tr.x},${c.tr.y} ${c.br.x},${c.br.y} ${c.bl.x},${c.bl.y} ${c.tl.x},${c.tl.y}`);
+    }
+  }
+
+  function setHandlePos(id, x, y) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.setAttribute('transform', `translate(${x}, ${y})`);
+  }
+
+  function initCalibratorInteractions() {
+    const handles = document.querySelectorAll('.calibrator-handles-layer .handle-item');
+    handles.forEach(h => {
+      h.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        isDraggingHandle = true;
+        activeDragHandleKey = h.getAttribute('data-handle');
+        h.setPointerCapture(e.pointerId);
+      });
+
+      h.addEventListener('pointermove', (e) => {
+        if (!isDraggingHandle || !activeDragHandleKey) return;
+        e.preventDefault();
+        e.stopPropagation();
+
+        const svgPt = screenToSvg(e.clientX, e.clientY);
+        const x = Math.round(Math.max(0, Math.min(1376, svgPt.x)));
+        const y = Math.round(Math.max(0, Math.min(768, svgPt.y)));
+
+        const obj = CALIBRATION[activeCalibratorTab];
+        if (!obj) return;
+
+        if (activeDragHandleKey === 'effect') {
+          obj.effect.x = x;
+          obj.effect.y = y;
+        } else if (obj.corners[activeDragHandleKey]) {
+          obj.corners[activeDragHandleKey].x = x;
+          obj.corners[activeDragHandleKey].y = y;
+        }
+
+        applyCalibration();
+        renderCalibratorControls();
+      });
+
+      const stopDrag = (e) => {
+        if (isDraggingHandle) {
+          isDraggingHandle = false;
+          activeDragHandleKey = null;
+          saveCalibrationToStorage();
+        }
+      };
+
+      h.addEventListener('pointerup', stopDrag);
+      h.addEventListener('pointercancel', stopDrag);
+    });
+  }
+
   window.toggleCalibrator = function () {
     const panel = document.getElementById('calibratorPanel');
     if (!panel) return;
-    panel.classList.toggle('active');
+    const isNowActive = panel.classList.toggle('active');
+
+    if (isNowActive) {
+      activeObjectKey = activeCalibratorTab;
+      applyCalibration();
+      renderCalibratorControls();
+      showToast('Calibrador ativo! Arraste na tela ou ajuste no painel.', 'info');
+    } else {
+      updateCalibratorHandles();
+    }
   };
 
-  window.updateCalibrator = function () {
-    const antY = parseInt(document.getElementById('sliderAntennaY').value, 10);
-    const ecgY = parseInt(document.getElementById('sliderEcgY').value, 10);
-    const lampX = parseInt(document.getElementById('sliderLampX').value, 10);
-    const lampY = parseInt(document.getElementById('sliderLampY').value, 10);
+  window.setCalibratorObject = function (tabKey) {
+    activeCalibratorTab = tabKey;
+    activeObjectKey = tabKey;
 
-    CALIBRATION.antennaY = antY;
-    CALIBRATION.ecgY = ecgY;
-    CALIBRATION.lampX = lampX;
-    CALIBRATION.lampY = lampY;
+    document.querySelectorAll('.cal-tab').forEach(b => {
+      b.classList.toggle('active', b.getAttribute('data-tab') === tabKey);
+    });
 
-    document.getElementById('valAntennaY').textContent = antY;
-    document.getElementById('valEcgY').textContent = ecgY;
-    document.getElementById('valLampX').textContent = lampX;
-    document.getElementById('valLampY').textContent = lampY;
+    document.querySelectorAll('.object-group').forEach(g => {
+      g.classList.toggle('active', g.getAttribute('data-key') === tabKey);
+    });
+    updateNavPills(tabKey);
+
+    applyCalibration();
+    renderCalibratorControls();
   };
 
-  window.copyCalibratorValues = function () {
-    const txt = JSON.stringify(CALIBRATION, null, 2);
-    navigator.clipboard.writeText(txt).then(() => {
-      showToast('Coordenadas copiadas para a área de transferência!', 'success');
+  function renderCalibratorControls() {
+    const container = document.getElementById('calibratorContent');
+    if (!container) return;
+
+    const obj = CALIBRATION[activeCalibratorTab];
+    if (!obj) return;
+
+    const cornerLabels = {
+      tl: 'Superior Esquerdo (TL)',
+      tr: 'Superior Direito (TR)',
+      br: 'Inferior Direito (BR)',
+      bl: 'Inferior Esquerdo (BL)'
+    };
+
+    container.innerHTML = `
+      <div class="cal-section-title">
+        <i class="fas fa-crosshairs"></i> Ponto de Efeito Especial (${obj.effectName})
+      </div>
+      <div class="cal-corner-box">
+        <div class="cal-input-row">
+          <label>X:</label>
+          <input type="range" min="0" max="1376" value="${obj.effect.x}" oninput="onCalibratorInputChange('effect', 'x', this.value)">
+          <input type="number" min="0" max="1376" value="${obj.effect.x}" oninput="onCalibratorInputChange('effect', 'x', this.value)">
+        </div>
+        <div class="cal-input-row">
+          <label>Y:</label>
+          <input type="range" min="0" max="768" value="${obj.effect.y}" oninput="onCalibratorInputChange('effect', 'y', this.value)">
+          <input type="number" min="0" max="768" value="${obj.effect.y}" oninput="onCalibratorInputChange('effect', 'y', this.value)">
+        </div>
+      </div>
+
+      <div class="cal-section-title">
+        <i class="fas fa-vector-square"></i> 4 Cantos Livres da Moldura
+      </div>
+      <div class="cal-corner-grid">
+        ${['tl', 'tr', 'bl', 'br'].map(c => `
+          <div class="cal-corner-box">
+            <div class="cal-corner-title">${cornerLabels[c]}</div>
+            <div class="cal-input-row">
+              <label>X:</label>
+              <input type="range" min="0" max="1376" value="${obj.corners[c].x}" oninput="onCalibratorInputChange('${c}', 'x', this.value)">
+              <input type="number" min="0" max="1376" value="${obj.corners[c].x}" oninput="onCalibratorInputChange('${c}', 'x', this.value)">
+            </div>
+            <div class="cal-input-row">
+              <label>Y:</label>
+              <input type="range" min="0" max="768" value="${obj.corners[c].y}" oninput="onCalibratorInputChange('${c}', 'y', this.value)">
+              <input type="number" min="0" max="768" value="${obj.corners[c].y}" oninput="onCalibratorInputChange('${c}', 'y', this.value)">
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  window.onCalibratorInputChange = function (target, axis, val) {
+    const num = Math.round(Number(val));
+    if (isNaN(num)) return;
+
+    const obj = CALIBRATION[activeCalibratorTab];
+    if (!obj) return;
+
+    if (target === 'effect') {
+      obj.effect[axis] = num;
+    } else if (obj.corners[target]) {
+      obj.corners[target][axis] = num;
+    }
+
+    applyCalibration();
+    renderCalibratorControls();
+    saveCalibrationToStorage();
+  };
+
+  window.copyFullCalibrationJSON = function () {
+    const exportData = {
+      antennaX: CALIBRATION.radio.effect.x,
+      antennaY: CALIBRATION.radio.effect.y,
+      lampX: CALIBRATION.dev.effect.x,
+      lampY: CALIBRATION.dev.effect.y,
+      ecgX: CALIBRATION.medical.effect.x,
+      ecgY: CALIBRATION.medical.effect.y,
+      tvX: CALIBRATION.tv.effect.x,
+      tvY: CALIBRATION.tv.effect.y,
+      frames: {
+        radio: CALIBRATION.radio.corners,
+        dev: CALIBRATION.dev.corners,
+        medical: CALIBRATION.medical.corners,
+        tv: CALIBRATION.tv.corners
+      }
+    };
+
+    const jsonStr = JSON.stringify(exportData, null, 2);
+    navigator.clipboard.writeText(jsonStr).then(() => {
+      showToast('Configuração completa copiada com sucesso!', 'success');
+    }).catch(() => {
+      showToast('Não foi possível copiar automaticamente.', 'info');
     });
   };
 
-  window.resetCalibratorValues = function () {
-    CALIBRATION.antennaY = 330;
-    CALIBRATION.ecgY = 362;
-    CALIBRATION.lampX = 525;
-    CALIBRATION.lampY = 350;
-
-    document.getElementById('sliderAntennaY').value = 330;
-    document.getElementById('sliderEcgY').value = 362;
-    document.getElementById('sliderLampX').value = 525;
-    document.getElementById('sliderLampY').value = 350;
-
-    window.updateCalibrator();
-    showToast('Valores restaurados ao padrão.', 'info');
+  window.resetCalibrationToDefault = function () {
+    CALIBRATION = JSON.parse(JSON.stringify(DEFAULT_CALIBRATION));
+    saveCalibrationToStorage();
+    applyCalibration();
+    renderCalibratorControls();
+    showToast('Coordenadas restauradas aos padrões.', 'info');
   };
 
   function initKeyboardShortcuts() {
@@ -509,7 +816,10 @@
         closeMiniModal('qrModal');
         closeMiniModal('leadsModal');
         const cal = document.getElementById('calibratorPanel');
-        if (cal) cal.classList.remove('active');
+        if (cal) {
+          cal.classList.remove('active');
+          updateCalibratorHandles();
+        }
       }
       // Atalho secreto Ctrl + Alt + A para calibrador
       if (e.ctrlKey && e.altKey && (e.key === 'a' || e.key === 'A')) {

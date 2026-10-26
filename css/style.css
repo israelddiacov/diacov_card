@@ -674,25 +674,92 @@ html, body {
 }
 
 /* ==========================================================================
-   PAINEL DE AJUSTE FINO VISUAL (CALIBRADOR INTERATIVO)
+   ALÇAS INTERATIVAS DO CALIBRADOR NO SVG (DRAGGABLE HANDLES)
+   ========================================================================== */
+.calibrator-handles-layer {
+  pointer-events: all;
+  z-index: 50;
+}
+
+.handle-guide-line {
+  fill: none;
+  stroke: rgba(233, 168, 37, 0.5);
+  stroke-width: 1.5px;
+  stroke-dasharray: 4 3;
+}
+
+.handle-item {
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform 0.1s ease;
+}
+
+.handle-item:active {
+  cursor: grabbing;
+}
+
+.handle-circle {
+  fill: #ffda6a;
+  stroke: #ffffff;
+  stroke-width: 2px;
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 10px #ffc83b);
+  transition: r 0.15s ease, fill 0.15s ease;
+}
+
+.handle-item:hover .handle-circle,
+.handle-item:active .handle-circle {
+  r: 15;
+  fill: #fff1a8;
+}
+
+.handle-item.handle-effect .handle-circle {
+  fill: #00f0ff;
+  stroke: #ffffff;
+  stroke-width: 2.5px;
+  filter: drop-shadow(0 0 6px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 14px #00f0ff);
+}
+
+.handle-item.handle-effect:hover .handle-circle,
+.handle-item.handle-effect:active .handle-circle {
+  r: 17;
+  fill: #bbf7ff;
+}
+
+.handle-text {
+  fill: #140d0a;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 900;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   PAINEL DE AJUSTE FINO VISUAL (CALIBRADOR INTERATIVO 4 CANTOS & EFEITOS)
    ========================================================================== */
 .calibrator-panel {
   position: fixed;
   bottom: 80px;
-  left: 20px;
+  right: 20px;
   background: rgba(18, 11, 7, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 2px solid var(--warm-mustard);
   border-radius: var(--radius-md);
   padding: 16px;
   z-index: 400;
-  max-width: 360px;
-  width: 90vw;
-  box-shadow: var(--shadow-hud);
+  max-width: 440px;
+  width: 94vw;
+  max-height: 82vh;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8), 0 0 24px rgba(233, 168, 37, 0.35);
   display: none;
   flex-direction: column;
   gap: 10px;
   font-size: 0.8rem;
   animation: modalPopIn 0.2s ease-out;
+  overflow-y: auto;
 }
 
 .calibrator-panel.active {
@@ -707,33 +774,116 @@ html, body {
   color: var(--warm-mustard-bright);
 }
 
-.calibrator-group {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.calibrator-hint {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.45;
 }
 
-.calibrator-row {
+.calibrator-tabs {
+  display: flex;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--hud-border);
+  overflow-x: auto;
+}
+
+.cal-tab {
+  flex: 1;
+  min-width: 70px;
+  padding: 6px 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--text-muted);
+  font-family: var(--font-heading);
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+  text-align: center;
+}
+
+.cal-tab.active,
+.cal-tab:hover {
+  background: rgba(233, 168, 37, 0.25);
+  border-color: var(--warm-mustard);
+  color: var(--warm-mustard-bright);
+}
+
+.cal-section-title {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--warm-mustard-bright);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 6px;
+  margin-bottom: 4px;
   display: flex;
   align-items: center;
+  gap: 6px;
+}
+
+.cal-corner-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
 }
 
-.calibrator-row label {
-  width: 75px;
-  font-weight: 700;
+.cal-corner-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.cal-corner-title {
+  font-weight: 800;
+  font-size: 0.7rem;
   color: var(--warm-orange);
+  margin-bottom: 6px;
 }
 
-.calibrator-row input[type="range"] {
-  flex: 1;
+.cal-input-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
 }
 
-.calibrator-row span {
-  width: 40px;
-  text-align: right;
+.cal-input-row label {
+  width: 14px;
   font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+}
+
+.cal-input-row input[type="range"] {
+  flex: 1;
+  accent-color: var(--warm-mustard);
+  cursor: pointer;
+}
+
+.cal-input-row input[type="number"] {
+  width: 54px;
+  padding: 3px 5px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--hud-border);
   color: var(--text-main);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-align: right;
+}
+
+.calibrator-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
 }
 
 /* ==========================================================================

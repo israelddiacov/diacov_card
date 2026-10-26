@@ -42,39 +42,69 @@
     <!-- Camada de Contornos Vetoriais dos Objetos (SVG 1:1 com a Imagem 1376x768) -->
     <svg class="scene-svg-overlay" id="sceneSvg" viewBox="0 0 1376 768" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       
-      <!-- 1. Contorno: Rádio Antigo na Mesinha Retrô -->
+      <!-- 1. Contorno: Rádio Antigo na Mesinha Retrô (4 Cantos Ajustáveis) -->
       <g class="object-group" id="groupRadio" data-key="radio" tabindex="0" role="button" aria-label="Rádio Antigo: Comunicação e WhatsApp" onclick="selectObject('radio')">
-        <rect class="object-contour" id="contourRadio" x="120" y="365" width="105" height="100" rx="10" />
+        <polygon class="object-contour" id="contourRadio" points="120,365 225,365 225,465 120,465" />
         <g class="object-label-group" id="labelRadio" transform="translate(172, 345)">
           <rect class="object-label-bg" x="-90" y="-14" width="180" height="28" />
           <text class="object-label-text" y="5">📻 Rádio • Mensageria & Zap</text>
         </g>
       </g>
 
-      <!-- 2. Contorno: Máquina de Escrever / Estação Dev -->
+      <!-- 2. Contorno: Máquina de Escrever / Estação Dev (4 Cantos Ajustáveis) -->
       <g class="object-group" id="groupDev" data-key="dev" tabindex="0" role="button" aria-label="Mesa de Trabalho: Sites e Programas" onclick="selectObject('dev')">
-        <rect class="object-contour" id="contourDev" x="460" y="430" width="135" height="85" rx="10" />
+        <polygon class="object-contour" id="contourDev" points="460,430 595,430 595,515 460,515" />
         <g class="object-label-group" id="labelDev" transform="translate(527, 408)">
           <rect class="object-label-bg" x="-95" y="-14" width="190" height="28" />
           <text class="object-label-text" y="5">💻 Estação Dev • Sites & Softwares</text>
         </g>
       </g>
 
-      <!-- 3. Contorno: Equipamentos Médicos & Monitor (Saúde, ANS & CNES) -->
+      <!-- 3. Contorno: Equipamentos Médicos & Monitor (4 Cantos Ajustáveis) -->
       <g class="object-group" id="groupMedical" data-key="medical" tabindex="0" role="button" aria-label="Equipamentos Médicos: Soluções em Saúde ANS e CNES" onclick="selectObject('medical')">
-        <rect class="object-contour" id="contourMedical" x="815" y="335" width="90" height="90" rx="10" />
+        <polygon class="object-contour" id="contourMedical" points="815,335 905,335 905,425 815,425" />
         <g class="object-label-group" id="labelMedical" transform="translate(860, 312)">
           <rect class="object-label-bg" x="-105" y="-14" width="210" height="28" />
           <text class="object-label-text" y="5">🩺 Saúde • ANS, CNES & CBHPM</text>
         </g>
       </g>
 
-      <!-- 4. Contorno: TV Retrô na Parede (Google Ads & SEO) -->
+      <!-- 4. Contorno: TV Retrô na Parede (4 Cantos Ajustáveis) -->
       <g class="object-group" id="groupTv" data-key="tv" tabindex="0" role="button" aria-label="TV Retrô: Google Ads e SEO" onclick="selectObject('tv')">
-        <rect class="object-contour" id="contourTv" x="1115" y="340" width="150" height="150" rx="12" />
+        <polygon class="object-contour" id="contourTv" points="1115,340 1265,340 1265,490 1115,490" />
         <g class="object-label-group" id="labelTv" transform="translate(1190, 315)">
           <rect class="object-label-bg" x="-95" y="-14" width="190" height="28" />
           <text class="object-label-text" y="5">📺 TV 60s • Google Ads & SEO</text>
+        </g>
+      </g>
+
+      <!-- Alças Visuais Interativas de Calibração (Draggable Handles na Imagem) -->
+      <g id="calibratorHandles" class="calibrator-handles-layer" style="display: none;">
+        <!-- Linhas conectoras guia -->
+        <polyline id="handleGuideLine" points="0,0 0,0 0,0 0,0 0,0" class="handle-guide-line" />
+        
+        <!-- 4 alças de cantos livres -->
+        <g class="handle-item" id="handleTL" data-handle="tl">
+          <circle cx="0" cy="0" r="12" class="handle-circle" />
+          <text x="0" y="3" class="handle-text">TL</text>
+        </g>
+        <g class="handle-item" id="handleTR" data-handle="tr">
+          <circle cx="0" cy="0" r="12" class="handle-circle" />
+          <text x="0" y="3" class="handle-text">TR</text>
+        </g>
+        <g class="handle-item" id="handleBR" data-handle="br">
+          <circle cx="0" cy="0" r="12" class="handle-circle" />
+          <text x="0" y="3" class="handle-text">BR</text>
+        </g>
+        <g class="handle-item" id="handleBL" data-handle="bl">
+          <circle cx="0" cy="0" r="12" class="handle-circle" />
+          <text x="0" y="3" class="handle-text">BL</text>
+        </g>
+
+        <!-- Alça do Ponto de Efeito Especial -->
+        <g class="handle-item handle-effect" id="handleEffect" data-handle="effect">
+          <circle cx="0" cy="0" r="14" class="handle-circle effect-circle" />
+          <text x="0" y="4" class="handle-text">★</text>
         </g>
       </g>
 
@@ -205,46 +235,37 @@
   </div>
 
   <!-- ====================================================================
-       5. PAINEL DE AJUSTE FINO VISUAL (CALIBRADOR INTERATIVO)
+       5. PAINEL DE AJUSTE FINO VISUAL (CALIBRADOR INTERATIVO 4 CANTOS & EFEITOS)
        ==================================================================== -->
   <aside class="calibrator-panel" id="calibratorPanel">
     <div class="calibrator-header">
-      <span><i class="fas fa-sliders me-2"></i> Ajuste Fino de Posições</span>
-      <button class="drawer-close" onclick="toggleCalibrator()" style="font-size: 1.1rem;">&times;</button>
+      <span><i class="fas fa-sliders me-2"></i> Calibrador 4 Cantos & Efeitos</span>
+      <button class="drawer-close" onclick="toggleCalibrator()" style="font-size: 1.1rem;" aria-label="Fechar Calibrador">&times;</button>
     </div>
-    <div style="font-size: 0.72rem; color: var(--text-muted);">
-      Ajuste em tempo real no seu monitor e clique em copiar:
-    </div>
-
-    <div class="calibrator-group">
-      <div class="calibrator-row">
-        <label>Antena Y:</label>
-        <input type="range" id="sliderAntennaY" min="280" max="380" value="330" oninput="updateCalibrator()">
-        <span id="valAntennaY">330</span>
-      </div>
-      <div class="calibrator-row">
-        <label>ECG Y:</label>
-        <input type="range" id="sliderEcgY" min="300" max="420" value="362" oninput="updateCalibrator()">
-        <span id="valEcgY">362</span>
-      </div>
-      <div class="calibrator-row">
-        <label>Lâmpada X:</label>
-        <input type="range" id="sliderLampX" min="450" max="600" value="525" oninput="updateCalibrator()">
-        <span id="valLampX">525</span>
-      </div>
-      <div class="calibrator-row">
-        <label>Lâmpada Y:</label>
-        <input type="range" id="sliderLampY" min="300" max="420" value="350" oninput="updateCalibrator()">
-        <span id="valLampY">350</span>
-      </div>
+    
+    <div class="calibrator-hint">
+      Arraste as alças (<strong>TL, TR, BR, BL, ★</strong>) na tela ou use os controles numéricos abaixo:
     </div>
 
-    <div style="display: flex; gap: 6px; margin-top: 6px;">
-      <button onclick="copyCalibratorValues()" class="btn-dock btn-dock-whatsapp btn-sm" style="flex: 1; font-size: 0.76rem; justify-content: center;">
-        <i class="fas fa-copy"></i> Copiar Valores
+    <!-- Seletor de Objetos da Sala -->
+    <div class="calibrator-tabs">
+      <button class="cal-tab active" data-tab="radio" onclick="setCalibratorObject('radio')">📻 Rádio</button>
+      <button class="cal-tab" data-tab="dev" onclick="setCalibratorObject('dev')">💻 Mesa/Dev</button>
+      <button class="cal-tab" data-tab="medical" onclick="setCalibratorObject('medical')">🩺 Saúde</button>
+      <button class="cal-tab" data-tab="tv" onclick="setCalibratorObject('tv')">📺 TV Retrô</button>
+    </div>
+
+    <!-- Controles Dinâmicos: Ponto de Efeito e os 4 Cantos -->
+    <div class="calibrator-content" id="calibratorContent">
+      <!-- Injetado dinamicamente via JS -->
+    </div>
+
+    <div class="calibrator-actions">
+      <button onclick="copyFullCalibrationJSON()" class="btn-dock btn-dock-whatsapp btn-sm" style="flex: 1; font-size: 0.78rem; justify-content: center;">
+        <i class="fas fa-copy"></i> Copiar Tudo (JSON)
       </button>
-      <button onclick="resetCalibratorValues()" class="btn-dock btn-dock-vcard btn-sm" style="font-size: 0.76rem;">
-        Padrão
+      <button onclick="resetCalibrationToDefault()" class="btn-dock btn-dock-vcard btn-sm" style="font-size: 0.78rem;" title="Restaurar valores padrão">
+        <i class="fas fa-rotate-left"></i> Padrão
       </button>
     </div>
   </aside>
