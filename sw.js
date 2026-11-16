@@ -1,5 +1,5 @@
 // Service Worker para Cache e Funcionamento Offline do Cartão Digital Diacov
-const CACHE_NAME = 'diacov-card-v3';
+const CACHE_NAME = 'diacov-card-v4';
 const ASSETS = [
   './',
   './index.html',

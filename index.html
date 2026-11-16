@@ -39,8 +39,12 @@
        ==================================================================== -->
   <div class="viewport-stage" id="viewportStage">
 
-    <!-- Camada de Contornos Vetoriais dos Objetos (SVG 1:1 com a Imagem 1376x768) -->
-    <svg class="scene-svg-overlay" id="sceneSvg" viewBox="0 0 1376 768" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <!-- Palco com Parallax 3D Suave (Fundo + SVG em sincronia 1:1) -->
+    <div class="parallax-stage" id="parallaxStage">
+      <div class="parallax-bg" aria-hidden="true"></div>
+
+      <!-- Camada de Contornos Vetoriais dos Objetos (SVG 1:1 com a Imagem 1376x768) -->
+      <svg class="scene-svg-overlay" id="sceneSvg" viewBox="0 0 1376 768" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       
       <!-- 1. Contorno: Rádio Antigo na Mesinha Retrô (4 Cantos Ajustáveis) -->
       <g class="object-group" id="groupRadio" data-key="radio" tabindex="0" role="button" aria-label="Rádio Antigo: Comunicação e WhatsApp" onclick="selectObject('radio')">
@@ -109,8 +113,12 @@
       </g>
 
     </svg>
+    </div>
 
-    <!-- Canvas de Efeitos Especiais (Raios, Faíscas, ECG e Partículas Douradas) -->
+    <!-- Holofote Interativo do Cursor -->
+    <div class="cursor-spotlight" id="cursorSpotlight" aria-hidden="true"></div>
+
+    <!-- Canvas de Efeitos Especiais (Raios, Ondas, ECG, Código, CRT & Partículas) -->
     <canvas class="scene-canvas-overlay" id="sceneCanvas"></canvas>
     
     <!-- Vinheta Cinematográfica -->
@@ -145,10 +153,16 @@
       <button class="nav-pill-btn" onclick="selectObject('tv')">
         <i class="fas fa-tv"></i> Google Ads & SEO
       </button>
+      <button class="nav-pill-btn nav-pill-tour" id="tourBtn" onclick="toggleAutoTour()" title="Demonstrar Efeitos Automaticamente">
+        <i class="fas fa-wand-magic-sparkles"></i> Tour
+      </button>
     </nav>
 
     <!-- Ações Rápidas -->
     <div class="hud-actions">
+      <button class="hud-btn" id="effectsToggleBtn" onclick="toggleEffectsPause()" title="Pausar Efeitos Visuais" aria-label="Pausar Efeitos">
+        <i class="fas fa-pause"></i>
+      </button>
       <button class="hud-btn" id="themeToggle" title="Alternar Modo Noturno / Diurno" aria-label="Tema">
         <i class="fas fa-sun"></i>
       </button>
@@ -210,6 +224,9 @@
       <div class="modal-window-body" id="modalBody">
         Descrição completa da solução e serviços.
       </div>
+
+      <!-- Mini Demonstração Visual da Capacidade -->
+      <div class="modal-live-demo" id="modalLiveDemo" aria-hidden="true"></div>
 
       <!-- Lista de Destaques Técnicos & Regulatórios -->
       <ul class="modal-window-highlights" id="modalHighlights">

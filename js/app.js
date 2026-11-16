@@ -31,6 +31,13 @@
         '<i class="fas fa-check-circle"></i> Histórico de disparos, controle de fila e logs de entrega em tempo real'
       ],
       tags: ['WhatsApp API', 'SMTP / Outlook', 'Mensageria em Massa', 'Webhooks', 'Automação', 'Python'],
+      liveDemo: `
+        <div class="demo-header-bar">
+          <span><i class="fas fa-satellite-dish"></i> Pipeline de Mensageria ao Vivo</span>
+          <span class="demo-status-pill"><i class="fas fa-circle" style="font-size:6px;"></i> API ONLINE</span>
+        </div>
+        <div>POST /webhook/whatsapp &rarr; <strong>200 OK</strong> &bull; Fila SMTP: 0 atrasos &bull; Entrega: 99.8%</div>
+      `,
       ctaText: 'Solicitar Automação de Comunicação no WhatsApp',
       whatsappMsg: 'Olá Israel! Vi seu cartão interativo e gostaria de automatizar mensagens, e-mails ou WhatsApp para minha empresa.'
     },
@@ -47,6 +54,13 @@
         '<i class="fas fa-check-circle"></i> Deploys automatizados com Docker e servidores Linux Nginx'
       ],
       tags: ['Criação de Sites', 'Reforma de Sites', 'Python', 'PHP / Laravel', 'C# / .NET', 'Docker', 'PostgreSQL'],
+      liveDemo: `
+        <div class="demo-header-bar">
+          <span><i class="fas fa-terminal"></i> Stack Full-Stack & Performance</span>
+          <span class="demo-status-pill"><i class="fas fa-bolt" style="font-size:9px;"></i> LIGHTHOUSE 99/100</span>
+        </div>
+        <div>&lt;/&gt; Responsivo Mobile + Desktop &bull; Docker Container: Healthy &bull; Postgres SSL</div>
+      `,
       ctaText: 'Pedir Orçamento de Site / Programa no WhatsApp',
       whatsappMsg: 'Olá Israel! Gostaria de um orçamento para criar ou reformar um site ou programa sob medida.'
     },
@@ -64,6 +78,13 @@
         '<i class="fas fa-check-circle"></i> Telemedicina segura por vídeo em tempo real com protocolo WebRTC'
       ],
       tags: ['Padrão TISS / TUSS', 'Regulação ANS', 'Integração CNES', 'Tabela CBHPM', 'OCR de Guias', 'WebRTC Vídeo'],
+      liveDemo: `
+        <div class="demo-header-bar">
+          <span><i class="fas fa-heart-pulse"></i> Telemetria Regulatória HealthTech</span>
+          <span class="demo-status-pill"><i class="fas fa-shield-check" style="font-size:9px;"></i> ANS TISS 4.01</span>
+        </div>
+        <div>CNES Webservice: <strong>Sincronizado</strong> &bull; Tabelas: CBHPM / TUSS / SIMPRO &bull; OCR Ativo</div>
+      `,
       ctaText: 'Conversar sobre Soluções para a Saúde no WhatsApp',
       whatsappMsg: 'Olá Israel! Gostaria de conversar sobre desenvolvimento de sistemas para a área médica (ANS, CNES, CBHPM ou Telemedicina).'
     },
@@ -80,6 +101,19 @@
         '<i class="fas fa-check-circle"></i> Certificação de segurança HTTPS e indexação correta no Google Search Console'
       ],
       tags: ['Google Ads', 'SEO no Topo', 'Core Web Vitals', 'Tráfego Pago', 'Conversão no WhatsApp', 'Search Console'],
+      liveDemo: `
+        <div class="demo-header-bar">
+          <span><i class="fas fa-chart-line"></i> Crescimento de Tráfego & Conversão</span>
+          <span class="demo-status-pill"><i class="fas fa-trophy" style="font-size:9px;"></i> TOPO GOOGLE #1</span>
+        </div>
+        <div class="demo-bars">
+          <div class="demo-bar" style="height: 30%;"></div>
+          <div class="demo-bar" style="height: 45%;"></div>
+          <div class="demo-bar" style="height: 62%;"></div>
+          <div class="demo-bar" style="height: 78%;"></div>
+          <div class="demo-bar" style="height: 100%;"></div>
+        </div>
+      `,
       ctaText: 'Colocar Minha Empresa no Google via WhatsApp',
       whatsappMsg: 'Olá Israel! Gostaria de colocar minha empresa no topo do Google com campanhas de Google Ads e SEO.'
     }
@@ -183,11 +217,19 @@
   let canvas, ctx;
   let particles = [];
   let sparks = [];
+  let radioWaves = [];
+  let floatingTokens = [];
   let ecgStep = 0;
+  let effectsPaused = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || false;
+  let autoTourTimer = null;
+  let autoTourIndex = 0;
+  const TOUR_SEQUENCE = ['radio', 'dev', 'medical', 'tv'];
 
   // Inicialização no DOM Ready
   document.addEventListener('DOMContentLoaded', () => {
     initTheme();
+    initEffectsControls();
+    initParallaxAndSpotlight();
     initCanvasEffects();
     initSvgEvents();
     applyCalibration();
@@ -252,7 +294,131 @@
   }
 
   /* ==========================================================================
-     3. EFEITOS ESPECIAIS NO CANVAS FULLSCREEN (POEIRA, RAIOS, ECG, BRILHO)
+     2B. CONTROLES DE EFEITOS (PAUSA WCAG 2.2.2), PARALLAX 3D & TOUR GUIADO
+     ========================================================================== */
+  function initEffectsControls() {
+    updateEffectsButtonUI();
+  }
+
+  function updateEffectsButtonUI() {
+    document.body.classList.toggle('effects-paused', effectsPaused);
+    const btn = document.getElementById('effectsToggleBtn');
+    if (!btn) return;
+    const icon = btn.querySelector('i');
+    if (effectsPaused) {
+      if (icon) icon.className = 'fas fa-play';
+      btn.title = 'Retomar Efeitos Visuais';
+      btn.setAttribute('aria-label', 'Retomar Efeitos');
+    } else {
+      if (icon) icon.className = 'fas fa-pause';
+      btn.title = 'Pausar Efeitos Visuais';
+      btn.setAttribute('aria-label', 'Pausar Efeitos');
+    }
+  }
+
+  window.toggleEffectsPause = function () {
+    effectsPaused = !effectsPaused;
+    if (effectsPaused && autoTourTimer) {
+      stopAutoTour();
+    }
+    updateEffectsButtonUI();
+    showToast(effectsPaused ? 'Efeitos visuais pausados' : 'Efeitos visuais ativados', 'info');
+  };
+
+  window.toggleAutoTour = function () {
+    if (autoTourTimer) {
+      stopAutoTour();
+      showToast('Tour automático encerrado', 'info');
+      return;
+    }
+
+    if (effectsPaused) {
+      effectsPaused = false;
+      updateEffectsButtonUI();
+    }
+
+    const tourBtn = document.getElementById('tourBtn');
+    if (tourBtn) tourBtn.classList.add('active');
+
+    autoTourIndex = 0;
+    highlightTourStep();
+    autoTourTimer = setInterval(() => {
+      autoTourIndex = (autoTourIndex + 1) % TOUR_SEQUENCE.length;
+      highlightTourStep();
+    }, 3600);
+
+    showToast('Tour pelos efeitos iniciado! Passe o mouse ou clique em qualquer objeto.', 'success');
+  };
+
+  function highlightTourStep() {
+    const key = TOUR_SEQUENCE[autoTourIndex];
+    activeObjectKey = key;
+    document.querySelectorAll('.object-group').forEach(g => {
+      g.classList.toggle('active', g.getAttribute('data-key') === key);
+    });
+    updateNavPills(key);
+  }
+
+  function stopAutoTour() {
+    if (autoTourTimer) {
+      clearInterval(autoTourTimer);
+      autoTourTimer = null;
+    }
+    const tourBtn = document.getElementById('tourBtn');
+    if (tourBtn) tourBtn.classList.remove('active');
+
+    const modal = document.getElementById('objectModalBackdrop');
+    if (!modal || !modal.classList.contains('active')) {
+      activeObjectKey = null;
+      document.querySelectorAll('.object-group').forEach(g => g.classList.remove('active'));
+      updateNavPills(null);
+    }
+  }
+
+  function initParallaxAndSpotlight() {
+    const stage = document.getElementById('parallaxStage');
+    const spotlight = document.getElementById('cursorSpotlight');
+    if (!stage && !spotlight) return;
+
+    let targetX = 0;
+    let targetY = 0;
+    let curX = 0;
+    let curY = 0;
+
+    window.addEventListener('pointermove', (e) => {
+      if (effectsPaused) return;
+      const nx = (e.clientX / window.innerWidth) - 0.5;
+      const ny = (e.clientY / window.innerHeight) - 0.5;
+      targetX = -nx * 18;
+      targetY = -ny * 12;
+
+      if (spotlight) {
+        spotlight.style.setProperty('--mx', `${e.clientX}px`);
+        spotlight.style.setProperty('--my', `${e.clientY}px`);
+        spotlight.classList.add('visible');
+      }
+    }, { passive: true });
+
+    document.addEventListener('mouseleave', () => {
+      if (spotlight) spotlight.classList.remove('visible');
+      targetX = 0;
+      targetY = 0;
+    });
+
+    function tickParallax() {
+      if (!effectsPaused && stage) {
+        curX += (targetX - curX) * 0.08;
+        curY += (targetY - curY) * 0.08;
+        stage.style.setProperty('--px', `${curX.toFixed(2)}px`);
+        stage.style.setProperty('--py', `${curY.toFixed(2)}px`);
+      }
+      requestAnimationFrame(tickParallax);
+    }
+    requestAnimationFrame(tickParallax);
+  }
+
+  /* ==========================================================================
+     3. EFEITOS ESPECIAIS NO CANVAS FULLSCREEN (POEIRA, RAIOS, ECG, CÓDIGO, CRT)
      ========================================================================== */
   function initCanvasEffects() {
     canvas = document.getElementById('sceneCanvas');
@@ -290,6 +456,11 @@
   function startAnimationLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    if (effectsPaused) {
+      requestAnimationFrame(startAnimationLoop);
+      return;
+    }
+
     // 1. Partículas douradas
     for (let p of particles) {
       p.x += p.speedX;
@@ -305,22 +476,27 @@
       ctx.fill();
     }
 
-    // 2. Efeito do Rádio: Raios Elétricos e Faíscas Exatamente na Antena
+    // 1B. Sinais discretos de interatividade quando em repouso
+    if (!activeObjectKey) {
+      drawIdleBeacons();
+    }
+
+    // 2. Efeito do Rádio: Raios Elétricos, Ondas de Frequência & Mensagens
     if (activeObjectKey === 'radio') {
       drawRadioLightning();
     }
 
-    // 3. Efeito dos Aparelhos Médicos: ECG Neon Verde Exatamente na Tela do Monitor
+    // 3. Efeito dos Aparelhos Médicos: Grade Osciloscópio, ECG Neon & Telemetria ANS/CNES
     if (activeObjectKey === 'medical') {
       drawMedicalECG();
     }
 
-    // 4. Efeito da TV: Brilho Analógico de Tubo (CRT)
+    // 4. Efeito da TV: Varredura CRT, Gráfico Google Ads/SEO & Selo #1
     if (activeObjectKey === 'tv') {
       drawTvGlow();
     }
 
-    // 5. Efeito da Estação Dev: Pulso e Brilho da Lâmpada sobre a Máquina de Escrever
+    // 5. Efeito da Estação Dev: Cone de Luz Volumétrico & Tokens de Código
     if (activeObjectKey === 'dev') {
       drawDevMatrixGlow();
     }
@@ -328,21 +504,83 @@
     requestAnimationFrame(startAnimationLoop);
   }
 
-  // Raios e faíscas dinâmicas a partir da ponta da antena do rádio
+  // Pequenos anéis pulsantes sutis indicando os 4 pontos interativos da sala
+  function drawIdleBeacons() {
+    const t = Date.now() / 1200;
+    const pulse = (t % 1);
+    const radius = 5 + pulse * 14;
+    const alpha = (1 - pulse) * 0.45;
+
+    const points = [
+      { pos: CALIBRATION.radio.effect, color: '255, 218, 106' },
+      { pos: CALIBRATION.dev.effect, color: '0, 240, 255' },
+      { pos: CALIBRATION.medical.effect, color: '57, 255, 20' },
+      { pos: CALIBRATION.tv.effect, color: '244, 162, 97' }
+    ];
+
+    for (const item of points) {
+      const p = svgToScreen(item.pos.x, item.pos.y);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(${item.color}, ${alpha})`;
+      ctx.lineWidth = 1.6;
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 3.2, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${item.color}, 0.75)`;
+      ctx.fill();
+    }
+  }
+
+  // Raios, ondas de rádio concêntricas e pacotes de mensagens na antena
   function drawRadioLightning() {
     const p = svgToScreen(CALIBRATION.radio.effect.x, CALIBRATION.radio.effect.y);
     const startX = p.x;
     const startY = p.y;
 
-    // Faíscas
-    if (Math.random() < 0.45) {
-      for (let i = 0; i < 3; i++) {
+    // Ondas concêntricas de transmissão
+    if (Math.random() < 0.08) {
+      radioWaves.push({ x: startX, y: startY, r: 6, alpha: 0.75 });
+    }
+    for (let i = radioWaves.length - 1; i >= 0; i--) {
+      const w = radioWaves[i];
+      w.r += 1.6;
+      w.alpha -= 0.012;
+      ctx.beginPath();
+      ctx.arc(w.x, w.y, w.r, -Math.PI * 0.9, -Math.PI * 0.1);
+      ctx.strokeStyle = `rgba(0, 240, 255, ${Math.max(0, w.alpha)})`;
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+      if (w.alpha <= 0) radioWaves.splice(i, 1);
+    }
+
+    // Pacotes de comunicação flutuantes (WhatsApp / E-mail / API)
+    if (Math.random() < 0.06) {
+      const labels = ['API', '@', '✓✓', 'SMTP', 'ZAP'];
+      floatingTokens.push({
+        type: 'radio',
+        text: labels[Math.floor(Math.random() * labels.length)],
+        x: startX + (Math.random() - 0.5) * 40,
+        y: startY - 12,
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: -1.1 - Math.random() * 0.6,
+        life: 65,
+        maxLife: 65,
+        color: '#ffea79'
+      });
+    }
+    drawFloatingTokens('radio');
+
+    // Faíscas suaves
+    if (Math.random() < 0.4) {
+      for (let i = 0; i < 2; i++) {
         sparks.push({
           x: startX,
           y: startY,
-          vx: (Math.random() - 0.5) * 8,
-          vy: (Math.random() - 0.7) * 8,
-          life: 22,
+          vx: (Math.random() - 0.5) * 6,
+          vy: (Math.random() - 0.7) * 6,
+          life: 20,
           color: Math.random() > 0.4 ? '#ffea79' : '#00f0ff'
         });
       }
@@ -357,7 +595,7 @@
       ctx.beginPath();
       ctx.arc(s.x, s.y, 2, 0, Math.PI * 2);
       ctx.fillStyle = s.color;
-      ctx.shadowBlur = 10;
+      ctx.shadowBlur = 8;
       ctx.shadowColor = s.color;
       ctx.fill();
       ctx.shadowBlur = 0;
@@ -366,28 +604,28 @@
     }
 
     // Arcos elétricos ramificados a partir da ponta da antena
-    if (Math.random() < 0.7) {
-      const rayCount = Math.floor(Math.random() * 3) + 2;
+    if (Math.random() < 0.55) {
+      const rayCount = Math.floor(Math.random() * 2) + 2;
       for (let r = 0; r < rayCount; r++) {
         let curX = startX;
         let curY = startY;
-        const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.6;
-        const length = 50 + Math.random() * 75;
-        const steps = 7;
+        const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.5;
+        const length = 45 + Math.random() * 65;
+        const steps = 6;
 
         ctx.beginPath();
         ctx.moveTo(curX, curY);
 
         for (let s = 0; s < steps; s++) {
           const segLen = length / steps;
-          curX += Math.cos(angle) * segLen + (Math.random() - 0.5) * 16;
-          curY += Math.sin(angle) * segLen + (Math.random() - 0.5) * 16;
+          curX += Math.cos(angle) * segLen + (Math.random() - 0.5) * 14;
+          curY += Math.sin(angle) * segLen + (Math.random() - 0.5) * 14;
           ctx.lineTo(curX, curY);
         }
 
         ctx.strokeStyle = Math.random() > 0.4 ? '#ffea79' : '#00e5ff';
-        ctx.lineWidth = Math.random() * 2.5 + 1;
-        ctx.shadowBlur = 14;
+        ctx.lineWidth = Math.random() * 2 + 1;
+        ctx.shadowBlur = 12;
         ctx.shadowColor = '#fcd34d';
         ctx.stroke();
         ctx.shadowBlur = 0;
@@ -395,14 +633,26 @@
     }
   }
 
-  // Linha de ECG verde neon exatamente na tela do monitor médico
+  // Osciloscópio com grade, linha de ECG verde neon e telemetria ANS/CNES
   function drawMedicalECG() {
     const center = svgToScreen(CALIBRATION.medical.effect.x, CALIBRATION.medical.effect.y);
     const pRight = svgToScreen(CALIBRATION.medical.effect.x + 35, CALIBRATION.medical.effect.y);
-    const screenWidth = Math.max(50, Math.abs(pRight.x - center.x) * 2);
+    const screenWidth = Math.max(54, Math.abs(pRight.x - center.x) * 2);
 
     const startX = center.x - screenWidth / 2;
     const baseY = center.y;
+
+    // Grade sutil de osciloscópio
+    ctx.save();
+    ctx.strokeStyle = 'rgba(57, 255, 20, 0.18)';
+    ctx.lineWidth = 0.8;
+    for (let gx = startX; gx <= startX + screenWidth; gx += 12) {
+      ctx.beginPath();
+      ctx.moveTo(gx, baseY - 22);
+      ctx.lineTo(gx, baseY + 20);
+      ctx.stroke();
+    }
+    ctx.restore();
 
     ecgStep = (ecgStep + 2) % screenWidth;
 
@@ -428,36 +678,148 @@
     ctx.shadowColor = '#39ff14';
     ctx.stroke();
     ctx.shadowBlur = 0;
+
+    // Badge flutuante de Telemetria HealthTech
+    drawCanvasBadge(center.x, baseY - 46, '♥ 74 BPM • ANS TISS • CNES', '#39ff14');
   }
 
-  // Brilho analógico da TV
+  // Brilho analógico da TV + Varredura CRT + Gráfico Google Ads & SEO #1
   function drawTvGlow() {
     const center = svgToScreen(CALIBRATION.tv.effect.x, CALIBRATION.tv.effect.y);
-    const rad = Math.max(25, 70 + Math.sin(Date.now() / 150) * 8);
+    const rad = Math.max(30, 74 + Math.sin(Date.now() / 220) * 6);
 
     const grad = ctx.createRadialGradient(center.x, center.y, 10, center.x, center.y, rad);
-    grad.addColorStop(0, 'rgba(244, 162, 97, 0.45)');
+    grad.addColorStop(0, 'rgba(244, 162, 97, 0.42)');
     grad.addColorStop(1, 'transparent');
 
     ctx.fillStyle = grad;
     ctx.beginPath();
     ctx.arc(center.x, center.y, rad, 0, Math.PI * 2);
     ctx.fill();
+
+    // Barras crescentes de tráfego/SEO dentro da tela CRT
+    const t = Date.now() / 400;
+    const barHeights = [14, 22, 30, 42, 54];
+    const barW = 8;
+    const gap = 5;
+    const totalW = barHeights.length * (barW + gap) - gap;
+    const bx0 = center.x - totalW / 2;
+    const by0 = center.y + 26;
+
+    ctx.save();
+    for (let i = 0; i < barHeights.length; i++) {
+      const animH = barHeights[i] * (0.85 + 0.15 * Math.sin(t + i * 0.7));
+      const bx = bx0 + i * (barW + gap);
+      const barGrad = ctx.createLinearGradient(bx, by0 - animH, bx, by0);
+      barGrad.addColorStop(0, '#ffc83b');
+      barGrad.addColorStop(1, '#e76f51');
+      ctx.fillStyle = barGrad;
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = 'rgba(255, 200, 59, 0.6)';
+      ctx.fillRect(bx, by0 - animH, barW, animH);
+    }
+    ctx.restore();
+
+    drawCanvasBadge(center.x, center.y - 44, '★ GOOGLE #1 • ADS + SEO', '#ffc83b');
   }
 
-  // Brilho da lâmpada sobre a máquina de escrever
+  // Cone de luz da luminária + tokens de código subindo da Estação Dev
   function drawDevMatrixGlow() {
     const center = svgToScreen(CALIBRATION.dev.effect.x, CALIBRATION.dev.effect.y);
-    const rad = Math.max(25, 65 + Math.cos(Date.now() / 180) * 6);
+    const rad = Math.max(28, 68 + Math.cos(Date.now() / 240) * 5);
+
+    // Cone volumétrico descendo da luminária
+    const coneGrad = ctx.createLinearGradient(center.x, center.y, center.x, center.y + 110);
+    coneGrad.addColorStop(0, 'rgba(0, 240, 255, 0.32)');
+    coneGrad.addColorStop(1, 'transparent');
+
+    ctx.save();
+    ctx.fillStyle = coneGrad;
+    ctx.beginPath();
+    ctx.moveTo(center.x - 16, center.y);
+    ctx.lineTo(center.x + 16, center.y);
+    ctx.lineTo(center.x + 68, center.y + 110);
+    ctx.lineTo(center.x - 68, center.y + 110);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
 
     const grad = ctx.createRadialGradient(center.x, center.y, 8, center.x, center.y, rad);
-    grad.addColorStop(0, 'rgba(0, 240, 255, 0.38)');
+    grad.addColorStop(0, 'rgba(0, 240, 255, 0.35)');
     grad.addColorStop(1, 'transparent');
 
     ctx.fillStyle = grad;
     ctx.beginPath();
     ctx.arc(center.x, center.y, rad, 0, Math.PI * 2);
     ctx.fill();
+
+    // Tokens flutuantes de código
+    if (Math.random() < 0.08) {
+      const codeSnippets = ['</>', '{ }', 'SQL', 'Docker', 'PHP', 'C#', 'API'];
+      floatingTokens.push({
+        type: 'dev',
+        text: codeSnippets[Math.floor(Math.random() * codeSnippets.length)],
+        x: center.x + (Math.random() - 0.5) * 55,
+        y: center.y + 55,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: -1.0 - Math.random() * 0.5,
+        life: 70,
+        maxLife: 70,
+        color: '#00f0ff'
+      });
+    }
+    drawFloatingTokens('dev');
+  }
+
+  function drawFloatingTokens(filterType) {
+    ctx.save();
+    ctx.font = '700 11px "JetBrains Mono", monospace';
+    ctx.textAlign = 'center';
+    for (let i = floatingTokens.length - 1; i >= 0; i--) {
+      const tk = floatingTokens[i];
+      if (tk.type !== filterType) {
+        tk.life -= 2;
+        if (tk.life <= 0) floatingTokens.splice(i, 1);
+        continue;
+      }
+      tk.x += tk.vx;
+      tk.y += tk.vy;
+      tk.life--;
+
+      const alpha = Math.min(1, tk.life / 25);
+      ctx.globalAlpha = Math.max(0, alpha);
+      ctx.fillStyle = tk.color;
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = tk.color;
+      ctx.fillText(tk.text, tk.x, tk.y);
+
+      if (tk.life <= 0) floatingTokens.splice(i, 1);
+    }
+    ctx.restore();
+  }
+
+  function drawCanvasBadge(x, y, text, borderColor) {
+    ctx.save();
+    ctx.font = '700 10.5px "JetBrains Mono", monospace';
+    const paddingX = 10;
+    const w = ctx.measureText(text).width + paddingX * 2;
+    const h = 22;
+    const rx = x - w / 2;
+    const ry = y - h / 2;
+
+    ctx.fillStyle = 'rgba(18, 11, 7, 0.88)';
+    ctx.strokeStyle = borderColor;
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.roundRect(rx, ry, w, h, 999);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = '#fffaf5';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, x, y);
+    ctx.restore();
   }
 
   /* ==========================================================================
@@ -468,6 +830,7 @@
 
     groups.forEach(g => {
       g.addEventListener('mouseenter', () => {
+        if (autoTourTimer) stopAutoTour();
         const key = g.getAttribute('data-key');
         activeObjectKey = key;
         updateNavPills(key);
@@ -486,6 +849,22 @@
   /* ==========================================================================
      5. MODAL CENTRALIZADO PERFEITAMENTE NO ESQUADRO
      ========================================================================== */
+  let supportsDisplayTransition;
+  function canTransitionDisplay() {
+    if (supportsDisplayTransition !== undefined) return supportsDisplayTransition;
+    if (!window.CSS?.supports?.('transition-behavior', 'allow-discrete') || !document.body) {
+      return false;
+    }
+    const probe = document.createElement('div');
+    probe.style.cssText = 'transition: display 1s allow-discrete !important; display: block;';
+    document.body.appendChild(probe);
+    getComputedStyle(probe).display;
+    probe.style.display = 'none';
+    supportsDisplayTransition = getComputedStyle(probe).display === 'block';
+    probe.remove();
+    return supportsDisplayTransition;
+  }
+
   window.selectObject = function (key) {
     // Se o calibrador estiver ativo, o clique seleciona o objeto para calibração
     const calPanel = document.getElementById('calibratorPanel');
@@ -493,6 +872,8 @@
       setCalibratorObject(key);
       return;
     }
+
+    if (autoTourTimer) stopAutoTour();
 
     activeObjectKey = key;
     const data = SCENE_OBJECTS[key];
@@ -514,6 +895,9 @@
     const bodyElem = document.getElementById('modalBody');
     if (bodyElem) bodyElem.innerHTML = data.body;
 
+    const demoElem = document.getElementById('modalLiveDemo');
+    if (demoElem) demoElem.innerHTML = data.liveDemo || '';
+
     const highlightsElem = document.getElementById('modalHighlights');
     if (highlightsElem) {
       highlightsElem.innerHTML = data.highlights.map(h => `<li>${h}</li>`).join('');
@@ -531,22 +915,41 @@
       ctaBtn.href = whatsappUrl;
     }
 
-    // 3. Abre o Modal Centralizado com animação suave
+    // 3. Abre o Modal Centralizado com transição nativa @starting-style
     const modal = document.getElementById('objectModalBackdrop');
     if (modal) {
+      modal.removeAttribute('data-closing');
       modal.classList.add('active');
     }
   };
 
   function updateNavPills(key) {
     document.querySelectorAll('.nav-pill-btn').forEach(btn => {
+      if (btn.id === 'tourBtn') return;
       btn.classList.toggle('active', key ? btn.getAttribute('onclick')?.includes(key) : false);
     });
   }
 
-  window.closeObjectModal = function () {
+  window.closeObjectModal = async function () {
     const modal = document.getElementById('objectModalBackdrop');
-    if (modal) modal.classList.remove('active');
+    if (modal && modal.classList.contains('active')) {
+      if (canTransitionDisplay()) {
+        modal.classList.remove('active');
+      } else {
+        modal.setAttribute('data-closing', '');
+        const animations = modal.getAnimations({ subtree: true });
+        if (animations.length > 0) {
+          await Promise.race([
+            Promise.allSettled(animations.map(a => a.finished)),
+            new Promise(r => setTimeout(r, 350))
+          ]);
+        }
+        if (modal.hasAttribute('data-closing')) {
+          modal.removeAttribute('data-closing');
+          modal.classList.remove('active');
+        }
+      }
+    }
     activeObjectKey = null;
     document.querySelectorAll('.object-group').forEach(g => g.classList.remove('active'));
     updateNavPills(null);

@@ -93,11 +93,68 @@ html, body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  background-color: #0d0805;
+  z-index: 1;
+}
+
+/* Palco com Parallax 3D: Fundo + SVG juntos para manter alinhamento 1:1 */
+.parallax-stage {
+  position: absolute;
+  inset: -18px;
+  transform: translate3d(var(--px, 0px), var(--py, 0px), 0) scale(1.03);
+  transition: transform 0.12s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.parallax-bg {
+  position: absolute;
+  inset: 0;
   background-image: url('../assets/retro_room_60s.jpg');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  z-index: 1;
+}
+
+/* Holofote Interativo que acompanha o Cursor */
+.cursor-spotlight {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 440px;
+  height: 440px;
+  margin-left: -220px;
+  margin-top: -220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 200, 59, 0.14) 0%, rgba(231, 111, 81, 0.06) 42%, transparent 70%);
+  transform: translate3d(var(--mx, -600px), var(--my, -600px), 0);
+  pointer-events: none;
+  z-index: 8;
+  mix-blend-mode: screen;
+  will-change: transform;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cursor-spotlight.visible {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .parallax-stage {
+    transform: none !important;
+    transition: none;
+  }
+  .cursor-spotlight {
+    display: none;
+  }
+}
+
+body.effects-paused .parallax-stage {
+  transform: none;
+}
+
+body.effects-paused .cursor-spotlight {
+  opacity: 0;
 }
 
 /* Camada SVG dos Contornos dos Objetos (1:1 com a Imagem) */
@@ -149,8 +206,29 @@ html, body {
   fill: rgba(233, 168, 37, 0.02);
   stroke: rgba(233, 168, 37, 0.35);
   stroke-width: 1.8px;
-  stroke-dasharray: 4 4;
-  transition: all var(--transition-fast);
+  stroke-dasharray: 6 4;
+  transition: fill var(--transition-fast), stroke var(--transition-fast), stroke-width var(--transition-fast), filter var(--transition-fast);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .object-contour {
+    animation: contourBreath 3.6s ease-in-out infinite;
+  }
+}
+
+body.effects-paused .object-contour {
+  animation: none;
+}
+
+@keyframes contourBreath {
+  0%, 100% {
+    stroke-opacity: 0.35;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-opacity: 0.78;
+    stroke-dashoffset: 10;
+  }
 }
 
 /* Destaque vibrante ao passar o mouse ou focar */
@@ -475,7 +553,7 @@ html, body {
 }
 
 /* ==========================================================================
-   MODAL DE DETALHES DO OBJETO (PERFEITAMENTE NO ESQUADRO E CENTRALIZADO)
+   MODAL DE DETALHES DO OBJETO (ENTRY/EXIT NATIVO COM @starting-style)
    ========================================================================== */
 .object-modal-backdrop {
   position: fixed;
@@ -488,30 +566,148 @@ html, body {
   -webkit-backdrop-filter: blur(14px);
   z-index: 200;
   display: none;
+  opacity: 0;
   align-items: center;
   justify-content: center;
   padding: 20px;
+  transition:
+    opacity 0.25s ease-out,
+    display 0.25s ease-out;
+  transition-behavior: allow-discrete;
 }
 
 .object-modal-backdrop.active {
   display: flex;
+  opacity: 1;
+}
+
+@starting-style {
+  .object-modal-backdrop.active {
+    opacity: 0;
+  }
+}
+
+.object-modal-backdrop[data-closing] {
+  opacity: 0;
 }
 
 .object-modal-window {
   background: var(--hud-card-glass);
   border: 2px solid var(--warm-mustard);
   border-radius: var(--radius-lg);
-  max-width: 620px;
+  max-width: 640px;
   width: 100%;
-  padding: 30px;
+  padding: 28px;
   box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9), var(--shadow-mustard);
-  animation: modalPopIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
   max-height: 90vh;
   overflow-y: auto;
+  opacity: 1;
+  scale: 1;
+  translate: 0 0;
+  transition:
+    opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    scale 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    translate 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@starting-style {
+  .object-modal-backdrop.active .object-modal-window {
+    opacity: 0;
+    scale: 0.94;
+    translate: 0 18px;
+  }
+}
+
+.object-modal-backdrop[data-closing] .object-modal-window {
+  opacity: 0;
+  scale: 0.94;
+  translate: 0 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .object-modal-window {
+    scale: none;
+    translate: none;
+    transition-duration: 0.1s;
+  }
+  @starting-style {
+    .object-modal-backdrop.active .object-modal-window {
+      scale: none;
+      translate: none;
+    }
+  }
+  .object-modal-backdrop[data-closing] .object-modal-window {
+    scale: none;
+    translate: none;
+  }
+}
+
+/* Mini Demonstração Visual da Capacidade dentro do Modal */
+.modal-live-demo {
+  background: rgba(10, 6, 4, 0.72);
+  border: 1px solid rgba(233, 168, 37, 0.35);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-main);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.demo-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.7rem;
+  color: var(--warm-orange);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.demo-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(57, 255, 20, 0.14);
+  color: var(--retro-neon-green);
+  border: 1px solid rgba(57, 255, 20, 0.35);
+  font-weight: 700;
+}
+
+.demo-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 34px;
+  padding-top: 4px;
+}
+
+.demo-bar {
+  flex: 1;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(180deg, var(--warm-mustard-bright), var(--warm-terracotta));
+  transition: height 0.5s ease;
+}
+
+.nav-pill-tour {
+  border-color: rgba(0, 240, 255, 0.45);
+  color: #8ceeff;
+}
+
+.nav-pill-tour.active,
+.nav-pill-tour:hover {
+  background: rgba(0, 240, 255, 0.18);
+  border-color: var(--retro-cyan);
+  color: #ffffff;
+  box-shadow: 0 0 14px rgba(0, 240, 255, 0.4);
 }
 
 @keyframes modalPopIn {
